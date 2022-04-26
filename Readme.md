@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Анна Маркелова](https://up.htmlacademy.ru/ecmascript/17/user/1761107).
-* Наставник: `Неизвестно`.
+* Наставник: [Михаил Кислый](https://htmlacademy.ru/profile/smart-grizzly).
 
 ---
 
