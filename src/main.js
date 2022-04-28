@@ -17,4 +17,4 @@ render(new MainNavigationView(), mainElement);
 render(new SortView(), mainElement);
 filmListPresenter.init(mainElement);
 render(new StatisticsView(), footerElement);
-popupPresenter.init(footerElement, 'afterend');
+popupPresenter.init(footerElement);
