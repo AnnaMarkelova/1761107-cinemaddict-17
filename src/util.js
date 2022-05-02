@@ -1,14 +1,14 @@
 import dayjs from 'dayjs';
 
-export const createRandomNumber = (min, max) => {
+export const getRandomNumber = (min, max) => {
   if (min <= max) {
     return Math.floor(Math.random() * (max - min) + min);
   }
   return 'Введите число в установленном диапазоне';
 };
 
-export const getUid = function(){
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+export const getUid = function() {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
 };
 
 export const getYearFromDate = (date) => dayjs(date).year();

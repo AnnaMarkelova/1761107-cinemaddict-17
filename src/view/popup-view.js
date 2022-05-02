@@ -30,13 +30,12 @@ const createCommentTemplate = (commentItem) => {
   </div>
   </li>`;
 
-
 };
 
 const createCommentsTemplate = (commentsList) => {
   let commentsTemplate = '';
   commentsTemplate = commentsList.map((item) => createCommentTemplate(item));
-  return commentsTemplate.join('');
+  return commentsTemplate.join();
 };
 
 const createPopupTemplate = (film, commentsList) => {
@@ -65,13 +64,19 @@ const createPopupTemplate = (film, commentsList) => {
     },
   } = film;
 
-  const watchListActive = watchList ? 'film-details__control-button--active' : '';
-  const alreadyWatchedActive = alreadyWatched ? 'film-details__control-button--active' : '';
-  const favoriteActive = favorite ? 'film-details__control-button--active' : '';
+  const watchListActive = watchList
+    ? 'film-details__control-button--active'
+    : '';
+  const alreadyWatchedActive = alreadyWatched
+    ? 'film-details__control-button--active'
+    : '';
+  const favoriteActive = favorite
+    ? 'film-details__control-button--active'
+    : '';
   const genresTemplate = createGenresTemplate(genre);
   const commentsTemplate = createCommentsTemplate(commentsList);
 
-  return `<section class="film-details ">
+  return `<section class="film-details visually-hidden">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
       <div class="film-details__close">

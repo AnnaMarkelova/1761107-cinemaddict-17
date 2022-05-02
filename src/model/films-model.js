@@ -1,14 +1,8 @@
-import { generateFilm } from '../mock/film-cards.js';
-
-const FILM_COUNT = 7;
+import { getFilms } from '../mock/films';
 
 export default class FilmsModel {
 
-  dataFilms = Array.from({length: FILM_COUNT}, generateFilm);
-  // films = dataFilms.map(dataFilms.film);
-  // comments = dataFilms.map(dataFilms.comments);
+  films = getFilms();
 
-  getFilms = () => this.dataFilms;
-
-  getComments = () => this.dataFilms;
+  getFilms = () => this.films;
 }
