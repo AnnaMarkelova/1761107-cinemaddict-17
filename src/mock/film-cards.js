@@ -50,9 +50,13 @@ export const generateFilm = () => {
       ageRating: createRandomNumber(0, 18),
       director: 'Tom Ford',
       writers: [
+        'Takeshi Kitano',
+        'Takeshi Kitano',
         'Takeshi Kitano'
       ],
       actors: [
+        'Morgan Freeman',
+        'Morgan Freeman',
         'Morgan Freeman'
       ],
       release: {

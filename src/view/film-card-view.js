@@ -5,13 +5,13 @@ const createFilmCardTemplate = (film) => {
   const {
     comments,
     filmInfo: {
-      release: {date},
       title,
       totalRating,
-      genre,
       poster,
-      description,
+      release: {date},
       runtime,
+      genre,
+      description,
     },
     userDetails: {
       watchList,

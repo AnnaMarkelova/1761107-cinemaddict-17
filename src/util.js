@@ -23,3 +23,5 @@ export const transformIntToHour = (int) => {
 
 };
 
+export const humanizeDateRelease = (dueDate) => dayjs(dueDate).format('D MMMM YYYY');
+export const humanizeDateComment = (dueDate) => dayjs(dueDate).format('YYYY/M/D H:m');

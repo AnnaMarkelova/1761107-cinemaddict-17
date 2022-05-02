@@ -19,4 +19,4 @@ render(new MainNavigationView(), mainElement);
 render(new SortView(), mainElement);
 filmListPresenter.init(mainElement, filmsModel);
 render(new StatisticsView(), footerElement);
-popupPresenter.init(footerElement);
+popupPresenter.init(footerElement, filmsModel);
