@@ -45,8 +45,8 @@ export const generateFilm = () => {
     filmInfo: {
       title: 'A Little Pony Without The Carpet',
       alternativeTitle: 'Laziness Who Sold Themselves',
-      totalRating: 5.3,
-      poster: 'images/posters/blue-blazes.jpg',
+      totalRating: 7.3,
+      poster: './images/posters/the-dance-of-life.jpg',
       ageRating: createRandomNumber(0, 18),
       director: 'Tom Ford',
       writers: [
@@ -59,7 +59,7 @@ export const generateFilm = () => {
         date: generateDate(-100, 100),
         releaseCountry: 'Finland'
       },
-      runtime: 77,
+      runtime: createRandomNumber(30, 250),
       genre: [
         'Comedy'
       ],

@@ -17,6 +17,6 @@ const filmsModel = new FilmsModel();
 render(new ProfileView(), headerElement);
 render(new MainNavigationView(), mainElement);
 render(new SortView(), mainElement);
-filmListPresenter.init(mainElement);
+filmListPresenter.init(mainElement, filmsModel);
 render(new StatisticsView(), footerElement);
 popupPresenter.init(footerElement);
