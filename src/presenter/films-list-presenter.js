@@ -4,6 +4,12 @@ import FilmsListView from '../view/films-list-view.js';
 import FilmsListContainerView from '../view/films-list-container-view.js';
 import FilmCardView from '../view/film-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
+import PopupPresenter from '../presenter/popup-presenter.js';
+import CommentsModel from '../model/comments-model.js';
+
+const footerElement = document.querySelector('.footer');
+
+const commentsModel = new CommentsModel();
 
 export default class FilmListPresenter {
   #filmListContainer;
@@ -30,7 +36,7 @@ export default class FilmListPresenter {
     render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
 
     for (let i = 0; i < this.#films.length; i++) {
-      render(new FilmCardView(this.#films[i]), this.#filmsListContainerComponent.element);
+      this.#renderFilm(this.#films[i], this.#filmsListContainerComponent.element);
     }
 
     render(new ShowMoreButtonView(), this.#filmsListComponent.element);
@@ -39,15 +45,25 @@ export default class FilmListPresenter {
     render(this.#filmsListContainerTopRatedComponent, this.#filmsListTopRatedComponent.element);
 
     for (let i = 0; i < 2; i++) {
-      render(new FilmCardView(this.#films[i]), this.#filmsListContainerTopRatedComponent.element);
+      this.#renderFilm(this.#films[i], this.#filmsListContainerTopRatedComponent.element);
     }
 
     render(this.#filmsListMostCommentedComponent, this.#filmsComponent.element);
     render(this.#filmsListContainerMostCommentedComponent, this.#filmsListMostCommentedComponent.element);
 
     for (let i = 0; i < 2; i++) {
-      render(new FilmCardView(this.#films[i]), this.#filmsListContainerMostCommentedComponent.element);
+      this.#renderFilm(this.#films[i], this.#filmsListContainerMostCommentedComponent.element);
     }
-
   };
+
+  #renderFilm = (film, container) => {
+    //создание и отрисовка карточки фильма
+    const filmCardComponent = new FilmCardView(film);
+    render(filmCardComponent, container);
+
+    //создание попапа
+    const popupComponent = new PopupPresenter();
+    popupComponent.init(footerElement, commentsModel, film);
+  };
+
 }

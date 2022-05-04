@@ -3,18 +3,25 @@ import PopupView from '../view/popup-view.js';
 
 export default class PopupPresenter {
   #popupContainer;
-  #filmsModel;
-  #films;
   #commentsModel;
-  #comments;
+  #film;
+  #comments = [];
 
-  init = (popupContainer, filmsModel, commentsModel) => {
+  init = (popupContainer, commentsModel, film) => {
     this.#popupContainer = popupContainer;
-    this.#filmsModel = filmsModel;
-    this.#films = [...this.#filmsModel.films];
     this.#commentsModel = commentsModel;
-    this.#comments = [...this.#commentsModel.comments];
+    this.#film = film;
+    this.#getComments();
+  };
 
-    render(new PopupView(this.#films[0], this.#comments), this.#popupContainer, 'afterend');
+  #getComments = () => {
+    this.#film.comments.forEach((item) => {
+      this.#comments.push(this.#commentsModel.getCommentById(item));
+    });
+  };
+
+  renderPopup = () => {
+    this.PopupView = new PopupView(this.#film, this.#comments);
+    render(this.PopupView, this.#popupContainer, 'afterend');
   };
 }
