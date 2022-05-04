@@ -35,7 +35,7 @@ const createCommentTemplate = (commentItem) => {
 const createCommentsTemplate = (commentsList) => {
   let commentsTemplate = '';
   commentsTemplate = commentsList.map((item) => createCommentTemplate(item));
-  return commentsTemplate.join();
+  return commentsTemplate.join('');
 };
 
 const createPopupTemplate = (film, commentsList) => {
@@ -76,7 +76,7 @@ const createPopupTemplate = (film, commentsList) => {
   const genresTemplate = createGenresTemplate(genre);
   const commentsTemplate = createCommentsTemplate(commentsList);
 
-  return `<section class="film-details visually-hidden">
+  return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
       <div class="film-details__close">
