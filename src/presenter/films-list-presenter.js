@@ -1,4 +1,5 @@
 import { render } from '../render.js';
+import { isEscapeEvent } from '../util.js';
 import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmsListContainerView from '../view/films-list-container-view.js';
@@ -71,7 +72,7 @@ export default class FilmListPresenter {
     };
 
     const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
+      if (isEscapeEvent(evt)) {
         evt.preventDefault();
         popupComponent.element.remove();
         popupComponent.removeElement();
