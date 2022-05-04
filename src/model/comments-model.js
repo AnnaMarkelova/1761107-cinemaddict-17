@@ -2,9 +2,11 @@ import { getComments } from '../mock/comments';
 
 export default class CommentsModel {
 
-  comments = getComments();
+  #comments = getComments();
 
-  getComments = () => this.comments;
+  get comments () {
+    return this.#comments;
+  }
 
-  getCommentById = (id) => this.comments.find((comment) => comment.id === id);
+  getCommentById = (id) => this.#comments.find((comment) => comment.id === id);
 }

@@ -6,30 +6,30 @@ const createFilmsListTemplate = (title, hideTitle, isExtra) => `
 </section>`;
 
 export default class FilmsListView {
-
-  title;
-  hideTitle;
-  isExtra;
+  #element = null;
+  #title;
+  #hideTitle;
+  #isExtra;
 
   constructor(title, hideTitle = false, isExtra = false) {
-    this.title = title;
-    this.hideTitle = hideTitle;
-    this.isExtra = isExtra;
+    this.#title = title;
+    this.#hideTitle = hideTitle;
+    this.#isExtra = isExtra;
   }
 
-  getTemplate() {
-    return createFilmsListTemplate(this.title, this.hideTitle, this.isExtra);
+  get template() {
+    return createFilmsListTemplate(this.#title, this.#hideTitle, this.#isExtra);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

@@ -35,7 +35,7 @@ const createCommentTemplate = (commentItem) => {
 const createCommentsTemplate = (commentsList) => {
   let commentsTemplate = '';
   commentsTemplate = commentsList.map((item) => createCommentTemplate(item));
-  return commentsTemplate.join();
+  return commentsTemplate.join('');
 };
 
 const createPopupTemplate = (film, commentsList) => {
@@ -76,7 +76,7 @@ const createPopupTemplate = (film, commentsList) => {
   const genresTemplate = createGenresTemplate(genre);
   const commentsTemplate = createCommentsTemplate(commentsList);
 
-  return `<section class="film-details visually-hidden">
+  return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
       <div class="film-details__close">
@@ -190,25 +190,28 @@ const createPopupTemplate = (film, commentsList) => {
   </section>`;
 };
 export default class PopupView {
+  #element = null;
+  #film;
+  #comments;
 
   constructor(film, comments) {
-    this.film = film;
-    this.comments = comments;
+    this.#film = film;
+    this.#comments = comments;
   }
 
-  getTemplate() {
-    return createPopupTemplate(this.film, this.comments);
+  get template() {
+    return createPopupTemplate(this.#film, this.#comments);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
