@@ -15,13 +15,7 @@ export default class FilmsModel {
 
   getFavoriteList = () => this.#films.filter((film) => film.userDetails.favorite);
 
-  getMostCommented = () => {
-    const sortedFilms = this.#films.sort((filmA, filmB) => filmB.comments.length - filmA.comments.length).slice(0, EXTRA_FILMS_COUNT);
-    return sortedFilms;
-  };
+  getMostCommented = () => this.#films.sort((filmA, filmB) => filmB.comments.length - filmA.comments.length).slice(0, EXTRA_FILMS_COUNT);
 
-  getMostRated = () => {
-    const sortedFilms = this.#films.sort((filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating).slice(0, EXTRA_FILMS_COUNT);
-    return sortedFilms;
-  };
+  getMostRated = () => this.#films.sort((filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating).slice(0, EXTRA_FILMS_COUNT);
 }

@@ -2,11 +2,11 @@ import { render } from '../render.js';
 import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmsListContainerView from '../view/films-list-container-view.js';
+import FilmPresenter from './film-presenter.js';
+import MainNavigationView from '../view/main-navigation-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import SortView from '../view/sort-view.js';
-import MainNavigationView from '../view/main-navigation-view.js';
 import StatisticsView from '../view/statistics-view.js';
-import FilmPresenter from './film-presenter.js';
 
 const FILMS_COUNT_PER_STEP = 5;
 
