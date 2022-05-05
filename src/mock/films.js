@@ -29,7 +29,7 @@ const generateFilm = () => {
     filmInfo: {
       title: 'A Little Pony Without The Carpet',
       alternativeTitle: 'Laziness Who Sold Themselves',
-      totalRating: 7.3,
+      totalRating: getRandomNumber(0, 10),
       poster: './images/posters/the-dance-of-life.jpg',
       ageRating: getRandomNumber(0, 18),
       director: 'Tom Ford',
