@@ -1,15 +1,20 @@
 import { createElement } from '../render.js';
 
-const createStatisticsTemplate = () =>
+const createStatisticsTemplate = (countFilms) =>
   `<section class="footer__statistics">
-    <p>130 291 movies inside</p>
+    <p>${countFilms} movies inside</p>
   </section>`;
 
 export default class StatisticsView {
   #element = null;
+  #countFilms;
+
+  constructor(countFilms) {
+    this.#countFilms = countFilms;
+  }
 
   get template() {
-    return createStatisticsTemplate();
+    return createStatisticsTemplate(this.#countFilms);
   }
 
   get element() {

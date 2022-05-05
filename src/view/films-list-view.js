@@ -11,11 +11,11 @@ export default class FilmsListView {
   #hideTitle;
   #isExtra;
 
-  constructor(title, hideTitle = false, isExtra = false) {
+  init = (title, hideTitle = false, isExtra = false) => {
     this.#title = title;
     this.#hideTitle = hideTitle;
     this.#isExtra = isExtra;
-  }
+  };
 
   get template() {
     return createFilmsListTemplate(this.#title, this.#hideTitle, this.#isExtra);

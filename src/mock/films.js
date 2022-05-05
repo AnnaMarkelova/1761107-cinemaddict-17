@@ -14,7 +14,7 @@ const DESCRIPTION = `
   Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.
 `.split('.');
 
-const FILM_COUNT = 7;
+const FILM_COUNT = 23;
 
 const generateDate = (minDayGap, maxDayGap) => {
   const daysGap = getRandomNumber(minDayGap, maxDayGap);
@@ -29,7 +29,7 @@ const generateFilm = () => {
     filmInfo: {
       title: 'A Little Pony Without The Carpet',
       alternativeTitle: 'Laziness Who Sold Themselves',
-      totalRating: 7.3,
+      totalRating: getRandomNumber(0, 10),
       poster: './images/posters/the-dance-of-life.jpg',
       ageRating: getRandomNumber(0, 18),
       director: 'Tom Ford',
