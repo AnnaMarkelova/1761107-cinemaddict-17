@@ -14,7 +14,7 @@ const DESCRIPTION = `
   Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.
 `.split('.');
 
-const FILM_COUNT = 7;
+const FILM_COUNT = 23;
 
 const generateDate = (minDayGap, maxDayGap) => {
   const daysGap = getRandomNumber(minDayGap, maxDayGap);
