@@ -1,4 +1,4 @@
-import { render } from '../render.js';
+import {render} from '../render.js';
 import { isEscapeEvent } from '../util.js';
 import FilmCardView from '../view/film-card-view.js';
 import PopupView from '../view/popup-view.js';

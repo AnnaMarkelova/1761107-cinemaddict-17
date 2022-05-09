@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { transformIntToHour, humanizeDateRelease, humanizeDateComment } from '../util.js';
 
 const createGenresTemplate = (genres) => {
@@ -189,12 +189,12 @@ const createPopupTemplate = (film, commentsList) => {
   </form>
   </section>`;
 };
-export default class PopupView {
-  #element = null;
+export default class PopupView extends AbstractView {
   #film;
   #comments;
 
   constructor(film, comments) {
+    super();
     this.#film = film;
     this.#comments = comments;
   }
@@ -203,15 +203,4 @@ export default class PopupView {
     return createPopupTemplate(this.#film, this.#comments);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
 }

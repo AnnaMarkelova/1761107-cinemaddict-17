@@ -1,4 +1,4 @@
-import { render } from '../render.js';
+import {render} from '../render.js';
 import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmsListContainerView from '../view/films-list-container-view.js';
