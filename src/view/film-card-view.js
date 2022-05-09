@@ -8,7 +8,7 @@ const createFilmCardTemplate = (film) => {
       title,
       totalRating,
       poster,
-      release: {date},
+      release: { date },
       runtime,
       genre,
       description,
@@ -57,5 +57,17 @@ export default class FilmCardView extends AbstractView {
   get template() {
     return createFilmCardTemplate(this.#film);
   }
+
+  setClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-card__link').addEventListener('click', this.#clickHandler);
+  };
+
+  #clickHandler = (evt) => {
+    if (evt.target.closest('.film-card__link')) {
+      evt.preventDefault();
+      this._callback.click();
+    }
+  };
 
 }
