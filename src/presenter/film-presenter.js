@@ -1,4 +1,4 @@
-import { render } from '../render.js';
+import { render, remove } from '../framework/render.js';
 import { isEscapeEvent } from '../util.js';
 import FilmCardView from '../view/film-card-view.js';
 import PopupView from '../view/popup-view.js';
@@ -26,7 +26,7 @@ export default class FilmPresenter {
   #renderFilm = () => {
     this.#filmCardComponent = new FilmCardView(this.#film);
     render(this.#filmCardComponent, this.#container);
-    this.#filmCardComponent.element.querySelector('.film-card__link').addEventListener('click', this.#onFilmCardClick);
+    this.#filmCardComponent.setClickHandler(this.#onFilmCardClick);
   };
 
   #getFilmComments = () => {
@@ -38,8 +38,7 @@ export default class FilmPresenter {
   };
 
   #closePopup = () => {
-    this.#popupComponent.element.remove();
-    this.#popupComponent.removeElement();
+    remove(this.#popupComponent);
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
@@ -55,12 +54,10 @@ export default class FilmPresenter {
     this.#closePopup();
   };
 
-  #onFilmCardClick = (evt) => {
-    if (evt.target.closest('.film-card__link')) {
-      this.#popupComponent = new PopupView(this.#film, this.#getFilmComments());
-      render(this.#popupComponent, footerElement, 'afterend');
-      this.#popupComponent.element.querySelector('.film-details__close-btn').addEventListener('click', this.#onFilmDetailsCloseBtnClick);
-    }
+  #onFilmCardClick = () => {
+    this.#popupComponent = new PopupView(this.#film, this.#getFilmComments());
+    render(this.#popupComponent, footerElement, 'afterend');
+    this.#popupComponent.setClickHandler(this.#onFilmDetailsCloseBtnClick);
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#onEscKeyDown);
   };

@@ -1,4 +1,4 @@
-import { render } from './render.js';
+import {render} from './framework/render.js';
 import CommentsModel from './model/comments-model.js';
 import FilmListPresenter from './presenter/films-list-presenter.js';
 import FilmsModel from './model/films-model.js';
