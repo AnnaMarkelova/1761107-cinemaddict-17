@@ -1,4 +1,4 @@
-import { render } from '../render.js';
+import { render, remove } from '../framework/render.js';
 import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmsListContainerView from '../view/films-list-container-view.js';
@@ -117,8 +117,7 @@ export default class FilmListPresenter {
   #onShowMoreBtnComponentClick = () => {
     this.#renderGroupFilms(this.#displayedFilmsCount, this.#displayedFilmsCount + FILMS_COUNT_PER_STEP);
     if (this.#displayedFilmsCount === this.#films.length) {
-      this.#showMoreBtnComponent.element.remove();
-      this.#showMoreBtnComponent.removeElement();
+      remove(this.#showMoreBtnComponent);
     }
   };
 
