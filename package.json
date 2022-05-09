@@ -16,8 +16,10 @@
     "start": "webpack serve --mode development"
   },
   "devDependencies": {
+    "css-loader": "6.7.1",
     "eslint": "8.13.0",
-    "eslint-config-htmlacademy": "5.1.2"
+    "eslint-config-htmlacademy": "5.1.2",
+    "style-loader": "3.3.1"
   },
   "engines": {
     "node": "16"
