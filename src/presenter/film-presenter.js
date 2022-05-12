@@ -1,5 +1,5 @@
 import { render, remove } from '../framework/render.js';
-import { isEscapeEvent } from '../util.js';
+import { isEscapeEvent } from '../util/util.js';
 import FilmCardView from '../view/film-card-view.js';
 import PopupView from '../view/popup-view.js';
 

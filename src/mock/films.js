@@ -1,5 +1,5 @@
 
-import { getRandomNumber, getUid } from '../util.js';
+import { getRandomNumber, getUid } from '../util/util.js';
 import dayjs from 'dayjs';
 import { getComments } from './comments.js';
 

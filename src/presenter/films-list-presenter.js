@@ -3,7 +3,6 @@ import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmsListContainerView from '../view/films-list-container-view.js';
 import FilmPresenter from './film-presenter.js';
-import MainNavigationView from '../view/main-navigation-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import SortView from '../view/sort-view.js';
 import StatisticsView from '../view/statistics-view.js';
@@ -16,20 +15,12 @@ export default class FilmListPresenter {
   #filmListContainer;
   #filmsModel;
   #films;
-  #watchList;
-  #alreadyWatchedList;
-  #favoriteList;
   #commentsModel;
   #displayedFilmsCount = 0;
-  #filmsListTopRatedComponent;
-  #filmsListContainerTopRatedComponent;
-  #filmsListMostCommentedComponent;
-  #filmsListContainerMostCommentedComponent;
 
   #filmsComponent = new FilmsView;
   #filmsListComponent = new FilmsListView;
   #filmsListContainerComponent = new FilmsListContainerView;
-
   #showMoreBtnComponent = new ShowMoreButtonView;
 
   constructor(filmListContainer, filmsModel, commentsModel) {
@@ -40,15 +31,12 @@ export default class FilmListPresenter {
 
   init = () => {
     this.#films = [...this.#filmsModel.films];
-    this.#watchList = this.#filmsModel.getWatchList();
-    this.#alreadyWatchedList = this.#filmsModel.getAlreadyWatchedList();
-    this.#favoriteList = this.#filmsModel.getFavoriteList();
 
     this.#renderFilmsBoard();
   };
 
   #renderFilmsBoard = () => {
-    render(new MainNavigationView(this.#watchList.length, this.#alreadyWatchedList.length, this.#favoriteList.length), this.#filmListContainer);
+    //render(new MainNavigationView(this.#watchList.length, this.#alreadyWatchedList.length, this.#favoriteList.length), this.#filmListContainer);
 
     if (!this.#films.length) {
       this.#filmsListComponent.init('There are no movies in our database', false);
@@ -80,28 +68,28 @@ export default class FilmListPresenter {
   };
 
   #renderFilmsListTopRated = () => {
-    this.#filmsListTopRatedComponent = new FilmsListView;
-    this.#filmsListTopRatedComponent.init('Top rated', false, true);
+    const filmsListTopRatedComponent = new FilmsListView;
+    filmsListTopRatedComponent.init('Top rated', false, true);
 
-    this.#filmsListContainerTopRatedComponent = new FilmsListContainerView;
+    const filmsListContainerTopRatedComponent = new FilmsListContainerView;
 
-    render(this.#filmsListTopRatedComponent, this.#filmsComponent.element);
-    render(this.#filmsListContainerTopRatedComponent, this.#filmsListTopRatedComponent.element);
+    render(filmsListTopRatedComponent, this.#filmsComponent.element);
+    render(filmsListContainerTopRatedComponent, filmsListTopRatedComponent.element);
     this.#filmsModel.getMostRated().forEach((film) =>
-      this.#renderFilm(film, this.#filmsListContainerTopRatedComponent.element));
+      this.#renderFilm(film, filmsListContainerTopRatedComponent.element));
   };
 
   #renderFilmsMostCommented = () => {
 
-    this.#filmsListMostCommentedComponent = new FilmsListView;
-    this.#filmsListMostCommentedComponent.init('Most commented', false, true);
+    const filmsListMostCommentedComponent = new FilmsListView;
+    filmsListMostCommentedComponent.init('Most commented', false, true);
 
-    this.#filmsListContainerMostCommentedComponent = new FilmsListContainerView;
+    const filmsListContainerMostCommentedComponent = new FilmsListContainerView;
 
-    render(this.#filmsListMostCommentedComponent, this.#filmsComponent.element);
-    render(this.#filmsListContainerMostCommentedComponent, this.#filmsListMostCommentedComponent.element);
+    render(filmsListMostCommentedComponent, this.#filmsComponent.element);
+    render(filmsListContainerMostCommentedComponent, filmsListMostCommentedComponent.element);
     this.#filmsModel.getMostCommented().forEach((film) =>
-      this.#renderFilm(film, this.#filmsListContainerMostCommentedComponent.element));
+      this.#renderFilm(film, filmsListContainerMostCommentedComponent.element));
   };
 
   #renderGroupFilms = (from, to) => {

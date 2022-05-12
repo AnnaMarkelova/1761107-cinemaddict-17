@@ -1,28 +1,31 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createMainNavigationTemplate = (watchListCount, historyCount, favoritesCount) =>
-  `<nav class="main-navigation">
-  <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-  <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchListCount}</span></a>
-  <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${historyCount}</span></a>
-  <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favoritesCount}</span></a>
-  </nav>`;
+const createFilterItemTemplate = (filter, isChecked) => {
+  const { name, count } = filter;
+  if (isChecked) {
+    return `<a href="#${name}" class="main-navigation__item main-navigation__item--active">${name}</a>`;
+  }
+  return `<a href="#${name}" class="main-navigation__item">${name}<span class="main-navigation__item-count">${count}</span></a>`;
+};
+
+const createMainNavigationTemplate = (filterItems) => {
+
+  const filtersTemplate = filterItems.map((filter, index) => createFilterItemTemplate(filter, index === 0)).join('');
+  return `<nav class="main-navigation"> ${filtersTemplate}</nav>`;
+
+};
 
 export default class MainNavigationView extends AbstractView {
 
-  #watchListCount;
-  #historyCount;
-  #favoritesCount;
+  #filters = null;
 
-  constructor(watchListCount, historyCount, favoritesCount) {
+  constructor(filters) {
     super();
-    this.#watchListCount = watchListCount;
-    this.#historyCount = historyCount;
-    this.#favoritesCount = favoritesCount;
+    this.#filters = filters;
   }
 
   get template() {
-    return createMainNavigationTemplate(this.#watchListCount, this.#historyCount, this.#favoritesCount);
+    return createMainNavigationTemplate(this.#filters);
   }
 
 }

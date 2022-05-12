@@ -1,11 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { transformIntToHour, humanizeDateRelease, humanizeDateComment } from '../util.js';
+import { transformIntToHour, humanizeDateRelease, humanizeDateComment } from '../util/util.js';
 
-const createGenresTemplate = (genres) => {
-  let genresTemplate = '';
-  genresTemplate = genres.map((item) => `<span class="film-details__genre">${item}</span>`);
-  return genresTemplate;
-};
+const createGenresTemplate = (genres) => genres.map((item) => `<span class="film-details__genre">${item}</span>`);
 
 const createCommentTemplate = (commentItem) => {
 
@@ -32,11 +28,7 @@ const createCommentTemplate = (commentItem) => {
 
 };
 
-const createCommentsTemplate = (commentsList) => {
-  let commentsTemplate = '';
-  commentsTemplate = commentsList.map((item) => createCommentTemplate(item));
-  return commentsTemplate.join('');
-};
+const createCommentsTemplate = (commentsList) => commentsList.map((item) => createCommentTemplate(item)).join('');
 
 const createPopupTemplate = (film, commentsList) => {
   const {
