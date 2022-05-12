@@ -1,4 +1,4 @@
-import { getRandomNumber, getUid } from '../util.js';
+import { getRandomNumber, getUid } from '../util/util.js';
 import dayjs from 'dayjs';
 
 const COMMENT_COUNT_MAX = 10;

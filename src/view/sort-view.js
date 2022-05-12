@@ -8,7 +8,6 @@ const createSortTemplate = () =>
   </ul>`;
 
 export default class SortView extends AbstractView{
-  #element = null;
 
   get template() {
     return createSortTemplate();
