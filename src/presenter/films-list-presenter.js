@@ -36,22 +36,30 @@ export default class FilmListPresenter {
   };
 
   #renderFilmsBoard = () => {
-    //render(new MainNavigationView(this.#watchList.length, this.#alreadyWatchedList.length, this.#favoriteList.length), this.#filmListContainer);
 
     if (!this.#films.length) {
-      this.#filmsListComponent.init('There are no movies in our database', false);
-      render(this.#filmsListComponent, this.#filmsComponent.element);
+      this.#renderNoFilms();
     } else {
-      render(new SortView, this.#filmListContainer);
-      render(this.#filmsComponent, this.#filmListContainer);
-
-      this.#renderFilmList();
-
-      this.#renderFilmsListTopRated();
-      this.#renderFilmsMostCommented();
+      this.#renderSorts();
+      this.#renderFilmsList();
     }
+    this.#renderStatistic();
+  };
 
-    render(new StatisticsView(this.#films.length), footerElement);
+  #renderNoFilms = () => {
+    this.#filmsListComponent.init('There are no movies in our database', false);
+    render(this.#filmsListComponent, this.#filmsComponent.element);
+  };
+
+  #renderSorts = () => {
+    render(new SortView, this.#filmListContainer);
+  };
+
+  #renderFilmsList = () => {
+    render(this.#filmsComponent, this.#filmListContainer);
+    this.#renderFilmList();
+    this.#renderFilmsListTopRated();
+    this.#renderFilmsMostCommented();
   };
 
   #renderFilmList = () => {
@@ -107,6 +115,10 @@ export default class FilmListPresenter {
     if (this.#displayedFilmsCount === this.#films.length) {
       remove(this.#showMoreBtnComponent);
     }
+  };
+
+  #renderStatistic = () => {
+    render(new StatisticsView(this.#films.length), footerElement);
   };
 
 }
