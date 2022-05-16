@@ -1,11 +1,11 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createFilterItemTemplate = (filter, isChecked) => {
-  const { name, count } = filter;
+  const { path, name, count } = filter;
   if (isChecked) {
-    return `<a href="#${name}" class="main-navigation__item main-navigation__item--active">${name}</a>`;
+    return `<a href="#${path}" class="main-navigation__item main-navigation__item--active">${name}</a>`;
   }
-  return `<a href="#${name}" class="main-navigation__item">${name}<span class="main-navigation__item-count">${count}</span></a>`;
+  return `<a href="#${path}" class="main-navigation__item">${name}<span class="main-navigation__item-count">${count}</span></a>`;
 };
 
 const createMainNavigationTemplate = (filterItems) => {

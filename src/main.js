@@ -10,7 +10,7 @@ const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
 
 const filmsModel = new FilmsModel();
-const filters = generateFilter(filmsModel.films);
+const filters = generateFilter(filmsModel);
 
 render(new MainNavigationView(filters), mainElement);
 render(new ProfileView(), headerElement);

@@ -1,8 +1,13 @@
-import { filter } from '../util/filter.js';
+import { getFilters } from '../util/filter.js';
 
-export const generateFilter = (films) => Object.entries(filter).map(
-  ([filterName, filterFilms]) => ({
-    name: filterName,
-    count: filterFilms(films).length,
-  }),
-);
+export const generateFilter = (filmsModel) => {
+  const filterList = [];
+  getFilters().forEach((value, key) => {
+    filterList.push({
+      path: key.path,
+      name: key.title,
+      count: value(filmsModel).length,
+    });
+  });
+  return filterList;
+};
