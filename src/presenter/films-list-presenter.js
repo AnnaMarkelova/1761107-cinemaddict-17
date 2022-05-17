@@ -108,8 +108,8 @@ export default class FilmListPresenter {
   };
 
   #renderFilm = (film, container) => {
-    const filmPresenter = new FilmPresenter(this.#commentsModel, film, container);
-    filmPresenter.init();
+    const filmPresenter = new FilmPresenter(container);
+    filmPresenter.init(film, this.#commentsModel);
     this.#filmPresenter.set(film.filmId, filmPresenter);
   };
 

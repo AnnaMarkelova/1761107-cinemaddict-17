@@ -7,20 +7,27 @@ const footerElement = document.querySelector('.footer');
 
 export default class FilmPresenter {
 
-  #film;
+  #film = null;
   #container;
-  #commentsModel;
-  #filmCardComponent;
-  #popupComponent;
+  #commentsModel = null;
+  #filmCardComponent = null;
+  #popupComponent = null;
 
-  constructor(commentsModel, film, container) {
-    this.#commentsModel = commentsModel;
-    this.#film = film;
+  constructor(container) {
     this.#container = container;
   }
 
-  init = () => {
-    this.#renderFilm();
+  init = (film, commentsModel) => {
+    this.#film = film;
+    this.#commentsModel = commentsModel;
+
+    const prevFilmCardComponent = this.#filmCardComponent;
+
+    if (prevFilmCardComponent === null) {
+      this.#renderFilm();
+    }
+
+    remove(prevFilmCardComponent);
   };
 
   #renderFilm = () => {
