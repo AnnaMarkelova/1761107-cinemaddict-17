@@ -23,6 +23,8 @@ export default class FilmListPresenter {
   #filmsListContainerComponent = new FilmsListContainerView;
   #showMoreBtnComponent = new ShowMoreButtonView;
 
+  #filmPresenter = new Map();
+
   constructor(filmListContainer, filmsModel, commentsModel) {
     this.#filmListContainer = filmListContainer;
     this.#filmsModel = filmsModel;
@@ -106,8 +108,9 @@ export default class FilmListPresenter {
   };
 
   #renderFilm = (film, container) => {
-    const filmPopup = new FilmPresenter(this.#commentsModel, film, container);
-    filmPopup.init();
+    const filmPresenter = new FilmPresenter(this.#commentsModel, film, container);
+    filmPresenter.init();
+    this.#filmPresenter.set(film.filmId, filmPresenter);
   };
 
   #onShowMoreBtnComponentClick = () => {
@@ -119,6 +122,13 @@ export default class FilmListPresenter {
 
   #renderStatistic = () => {
     render(new StatisticsView(this.#films.length), footerElement);
+  };
+
+  #clearTaskList = () => {
+    this.#filmPresenter.forEach((presenter) => presenter.destroy());
+    this.#filmPresenter.clear();
+    this.#displayedFilmsCount = 0;
+    remove(this.#showMoreBtnComponent);
   };
 
 }

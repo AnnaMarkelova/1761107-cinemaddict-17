@@ -1,7 +1,8 @@
 
-import { getRandomNumber, getUid } from '../util/util.js';
+import { getRandomNumber } from '../util/util.js';
 import dayjs from 'dayjs';
 import { getComments } from './comments.js';
+import {nanoid} from 'nanoid';
 
 const DESCRIPTION = `
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -22,7 +23,7 @@ const generateDate = (minDayGap, maxDayGap) => {
 };
 
 const generateFilm = () => {
-  const filmId = getUid();
+  const filmId = nanoid();
   const film = {
     id: filmId,
     comments: getComments().map((comment) => comment.id),

@@ -62,4 +62,9 @@ export default class FilmPresenter {
     document.addEventListener('keydown', this.#onEscKeyDown);
   };
 
+  destroy = () => {
+    remove(this.#filmCardComponent);
+    remove(this.#popupComponent);
+  };
+
 }

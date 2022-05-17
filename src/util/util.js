@@ -7,10 +7,6 @@ export const getRandomNumber = (min, max) => {
   return 'Введите число в установленном диапазоне';
 };
 
-export const getUid = function () {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2);
-};
-
 export const getYearFromDate = (date) => dayjs(date).year();
 
 export const transformIntToHour = (int) => {
