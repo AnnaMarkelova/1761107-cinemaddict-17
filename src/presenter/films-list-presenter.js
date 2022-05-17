@@ -1,4 +1,5 @@
 import { render, remove } from '../framework/render.js';
+import {updateItem} from '../util/util.js';
 import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmsListContainerView from '../view/films-list-container-view.js';
@@ -23,7 +24,7 @@ export default class FilmListPresenter {
   #filmsListContainerComponent = new FilmsListContainerView;
   #showMoreBtnComponent = new ShowMoreButtonView;
 
-  #filmPresenter = new Map();
+  #filmPresenterMap = new Map();
 
   constructor(filmListContainer, filmsModel, commentsModel) {
     this.#filmListContainer = filmListContainer;
@@ -108,9 +109,9 @@ export default class FilmListPresenter {
   };
 
   #renderFilm = (film, container) => {
-    const filmPresenter = new FilmPresenter(container);
+    const filmPresenter = new FilmPresenter(container, this.#handleFilmChange);
     filmPresenter.init(film, this.#commentsModel);
-    this.#filmPresenter.set(film.filmId, filmPresenter);
+    this.#filmPresenterMap.set(film.id, filmPresenter);
   };
 
   #onShowMoreBtnComponentClick = () => {
@@ -124,11 +125,16 @@ export default class FilmListPresenter {
     render(new StatisticsView(this.#films.length), footerElement);
   };
 
-  #clearTaskList = () => {
-    this.#filmPresenter.forEach((presenter) => presenter.destroy());
-    this.#filmPresenter.clear();
-    this.#displayedFilmsCount = 0;
-    remove(this.#showMoreBtnComponent);
+  // #clearFilmList = () => {
+  //   this.#filmPresenterMap.forEach((presenter) => presenter.destroy());
+  //   this.#filmPresenterMap.clear();
+  //   this.#displayedFilmsCount = 0;
+  //   remove(this.#showMoreBtnComponent);
+  // };
+
+  #handleFilmChange = (updatedFilm) => {
+    this.#films = updateItem(this.#films, updatedFilm);
+    this.#filmPresenterMap.get(updatedFilm.id).init(updatedFilm, this.#commentsModel);
   };
 
 }

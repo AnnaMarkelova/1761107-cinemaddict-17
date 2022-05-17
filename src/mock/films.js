@@ -23,9 +23,8 @@ const generateDate = (minDayGap, maxDayGap) => {
 };
 
 const generateFilm = () => {
-  const filmId = nanoid();
   const film = {
-    id: filmId,
+    id: nanoid(),
     comments: getComments().map((comment) => comment.id),
     filmInfo: {
       title: 'A Little Pony Without The Carpet',

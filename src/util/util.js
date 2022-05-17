@@ -23,3 +23,17 @@ export const humanizeDateRelease = (dueDate) => dayjs(dueDate).format('D MMMM YY
 export const humanizeDateComment = (dueDate) => dayjs(dueDate).format('YYYY/M/D H:m');
 
 export const isEscapeEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
