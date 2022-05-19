@@ -1,4 +1,5 @@
 import { render } from '../framework/render.js';
+import {updateItem} from '../util/util.js';
 import { generateFilter } from '../mock/filter.js';
 import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
@@ -23,6 +24,8 @@ export default class PagePresenter {
   #filmListContainer;
   #filmListPresenter;
   #filmsListTopRatedPresenter;
+
+  #filmListPresenters = [];
 
   constructor(filmListContainer, filmsModel, commentsModel) {
     this.#filmListContainer = filmListContainer;
@@ -70,22 +73,70 @@ export default class PagePresenter {
 
   #renderFilmsList = () => {
     render(this.#filmsComponent, this.#filmListContainer);
-    this.#filmListPresenter = new FilmListPresenter(this.#filmsComponent, this.#filmsModel.films, this.#commentsModel, this.#handleDeletePopups, 'All movies. Upcoming', true, false);
+    this.#filmListPresenter = new FilmListPresenter(
+      this.#filmsComponent,
+      this.#filmsModel.films,
+      this.#commentsModel,
+      this.#handleFilmChange,
+      this.#handleDeletePopups,
+      'All movies. Upcoming',
+      true,
+      false
+    );
     this.#filmListPresenter.init();
-    this.#filmsListTopRatedPresenter = new FilmListPresenter(this.#filmsComponent, this.#filmsModel.getMostRated(), this.#commentsModel, this.#handleDeletePopups, 'Top rated', false, true);
+    this.#filmListPresenters.push(this.#filmListPresenter);
+
+    this.#filmsListTopRatedPresenter = new FilmListPresenter(
+      this.#filmsComponent,
+      this.#filmsModel.getMostRated(),
+      this.#commentsModel,
+      this.#handleFilmChange,
+      this.#handleDeletePopups,
+      'Top rated',
+      false,
+      true
+    );
     this.#filmsListTopRatedPresenter.init();
-    this.#filmsListMostCommentedPresenter = new FilmListPresenter(this.#filmsComponent, this.#filmsModel.getMostCommented(), this.#commentsModel, this.#handleDeletePopups, 'Most commented', false, true);
+    this.#filmListPresenters.push(this.#filmsListTopRatedPresenter);
+
+    this.#filmsListMostCommentedPresenter = new FilmListPresenter(
+      this.#filmsComponent,
+      this.#filmsModel.getMostCommented(),
+      this.#commentsModel,
+      this.#handleFilmChange,
+      this.#handleDeletePopups,
+      'Most commented',
+      false,
+      true
+    );
     this.#filmsListMostCommentedPresenter.init();
+    this.#filmListPresenters.push(this.#filmsListMostCommentedPresenter);
   };
 
   #renderStatistic = () => {
     render(new StatisticsView(this.#films.length), footerElement);
   };
 
+  #handleFilmChange = (updatedFilm) => {
+    this.#films = updateItem(this.#films, updatedFilm);
+
+    this.#filmListPresenters.forEach((presenter) => {
+      this.#updateFilmList(presenter, updatedFilm);
+    });
+
+  };
+
+  #updateFilmList = (filmListPresenter, updatedFilm) => {
+    const filmPresenterMap = filmListPresenter.getFilmPresenterMap();
+    if (filmPresenterMap.has(updatedFilm.id)) {
+      filmPresenterMap.get(updatedFilm.id).init(updatedFilm, this.#commentsModel);
+    }
+  };
+
   #handleDeletePopups = () => {
-    this.#filmListPresenter.getFilmPresenterMap().forEach((presenter) => presenter.deletePopup());
-    this.#filmsListTopRatedPresenter.getFilmPresenterMap().forEach((presenter) => presenter.deletePopup());
-    this.#filmsListMostCommentedPresenter.getFilmPresenterMap().forEach((presenter) => presenter.deletePopup());
+    this.#filmListPresenters.forEach((presenter) => {
+      presenter.getFilmPresenterMap().forEach((filmPresenter) => filmPresenter.deletePopup());
+    });
   };
 
 }

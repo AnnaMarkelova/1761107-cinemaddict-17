@@ -1,5 +1,4 @@
 import { render, remove } from '../framework/render.js';
-import {updateItem} from '../util/util.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmsListContainerView from '../view/films-list-container-view.js';
 import FilmPresenter from './film-presenter.js';
@@ -10,6 +9,7 @@ const FILMS_COUNT_PER_STEP = 5;
 export default class FilmListPresenter {
 
   #handleDeletePopups = null;
+  #handleFilmChange = null;
   #commentsModel;
   #displayedFilmsCount = 0;
   #isExtra;
@@ -23,11 +23,12 @@ export default class FilmListPresenter {
 
   #filmPresenterMap = new Map();
 
-  constructor(filmsComponent, films, commentsModel, handleDeletePopups, title, hideTitle = false, isExtra = false) {
+  constructor(filmsComponent, films, commentsModel,handleFilmChange, handleDeletePopups, title, hideTitle = false, isExtra = false) {
     this.#films = films;
     this.#commentsModel = commentsModel;
     this.#filmsComponent = filmsComponent;
 
+    this.#handleFilmChange = handleFilmChange;
     this.#handleDeletePopups = handleDeletePopups;
 
     this.#title = title;
@@ -77,11 +78,6 @@ export default class FilmListPresenter {
   //   this.#displayedFilmsCount = 0;
   //   remove(this.#showMoreBtnComponent);
   // };
-
-  #handleFilmChange = (updatedFilm) => {
-    this.#films = updateItem(this.#films, updatedFilm);
-    this.#filmPresenterMap.get(updatedFilm.id).init(updatedFilm, this.#commentsModel);
-  };
 
   getFilmPresenterMap = () => this.#filmPresenterMap;
 
