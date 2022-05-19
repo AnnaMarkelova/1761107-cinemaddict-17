@@ -7,6 +7,7 @@ import FilmListPresenter from './films-list-presenter.js';
 import SortView from '../view/sort-view.js';
 import StatisticsView from '../view/statistics-view.js';
 import MainNavigationView from '../view/main-navigation-view.js';
+import PopupPresenter from './popup-presenter.js';
 import ProfileView from '../view/profile-view.js';
 
 const mainElement = document.querySelector('.main');
@@ -24,6 +25,7 @@ export default class PagePresenter {
   #filmListContainer;
   #filmListPresenter;
   #filmsListTopRatedPresenter;
+  #popupPresenter;
 
   #filmListPresenters = [];
 
@@ -31,6 +33,7 @@ export default class PagePresenter {
     this.#filmListContainer = filmListContainer;
     this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
+    this.#popupPresenter = new PopupPresenter(this.#handleFilmChange);
   }
 
   init = () => {
@@ -76,9 +79,8 @@ export default class PagePresenter {
     this.#filmListPresenter = new FilmListPresenter(
       this.#filmsComponent,
       this.#filmsModel.films,
-      this.#commentsModel,
       this.#handleFilmChange,
-      this.#handleDeletePopups,
+      this.#handleUpdatePopup,
       'All movies. Upcoming',
       true,
       false
@@ -89,9 +91,8 @@ export default class PagePresenter {
     this.#filmsListTopRatedPresenter = new FilmListPresenter(
       this.#filmsComponent,
       this.#filmsModel.getMostRated(),
-      this.#commentsModel,
       this.#handleFilmChange,
-      this.#handleDeletePopups,
+      this.#handleUpdatePopup,
       'Top rated',
       false,
       true
@@ -102,9 +103,8 @@ export default class PagePresenter {
     this.#filmsListMostCommentedPresenter = new FilmListPresenter(
       this.#filmsComponent,
       this.#filmsModel.getMostCommented(),
-      this.#commentsModel,
       this.#handleFilmChange,
-      this.#handleDeletePopups,
+      this.#handleUpdatePopup,
       'Most commented',
       false,
       true
@@ -133,10 +133,8 @@ export default class PagePresenter {
     }
   };
 
-  #handleDeletePopups = () => {
-    this.#filmListPresenters.forEach((presenter) => {
-      presenter.getFilmPresenterMap().forEach((filmPresenter) => filmPresenter.deletePopup());
-    });
+  #handleUpdatePopup = (film) => {
+    this.#popupPresenter.init(film, this.#commentsModel);
   };
 
 }

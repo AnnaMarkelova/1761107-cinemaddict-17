@@ -11,11 +11,9 @@ export default class PopupPresenter {
   #film = null;
   #popupComponent = null;
   #container = footerElement;
-  #changeMode =null;
 
-  constructor(changeData, changeMode) {
+  constructor(changeData) {
     this.#changeData = changeData;
-    this.#changeMode = changeMode;
   }
 
   init = (film, commentsModel) => {
@@ -63,9 +61,9 @@ export default class PopupPresenter {
 
   closePopup = () => {
     remove(this.#popupComponent);
+    this.#popupComponent = null;
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#onEscKeyDown);
-    this.#changeMode();
   };
 
   #setupFilmUserDetailHandlers = () => {
@@ -75,17 +73,19 @@ export default class PopupPresenter {
   };
 
   #handleWatchlistClick = () => {
-    this.#film.userDetails.watchList = !this.#film.userDetails.watchList;
-    this.#changeData({ ...this.#film });
+    this.#changeUserDetail('watchList');
   };
 
   #handleAlreadyWatchedClick = () => {
-    this.#film.userDetails.alreadyWatched = !this.#film.userDetails.alreadyWatched;
-    this.#changeData({ ...this.#film });
+    this.#changeUserDetail('alreadyWatched');
   };
 
   #handleFavoriteClick = () => {
-    this.#film.userDetails.favorite = !this.#film.userDetails.favorite;
+    this.#changeUserDetail('favorite');
+  };
+
+  #changeUserDetail = (userDetail) => {
+    this.#film.userDetails[userDetail] = !this.#film.userDetails[userDetail];
     this.#changeData({ ...this.#film });
   };
 

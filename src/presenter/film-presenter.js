@@ -1,31 +1,22 @@
 import { render, remove, replace } from '../framework/render.js';
 import FilmCardView from '../view/film-card-view.js';
-import PopupPresenter from './popup-presenter.js';
 
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  OPEN_POPUP: 'OPEN_POPUP',
-};
 export default class FilmPresenter {
 
   #changeData = null;
-  #deletePopups = null;
+  #updatePopup = null;
   #container = null;
-  #commentsModel = null;
-  #mode = Mode.DEFAULT;
   #film = null;
   #filmCardComponent = null;
-  #popupPresenter = null;
 
-  constructor(container, changeData, deletePopups) {
+  constructor(container, changeData, updatePopup) {
     this.#container = container;
     this.#changeData = changeData;
-    this.#deletePopups = deletePopups;
+    this.#updatePopup = updatePopup;
   }
 
-  init = (film, commentsModel) => {
+  init = (film) => {
     this.#film = film;
-    this.#commentsModel = commentsModel;
 
     const prevFilmCardComponent = this.#filmCardComponent;
     this.#filmCardComponent = new FilmCardView(this.#film);
@@ -41,9 +32,7 @@ export default class FilmPresenter {
       replace(this.#filmCardComponent, prevFilmCardComponent);
       this.#filmCardComponent.setClickHandler(this.#onFilmCardClick);
       this.#setupPopupUserDetailHandlers();
-      if (this.#popupPresenter !== null) {
-        this.#popupPresenter.init(this.#film, this.#commentsModel);
-      }
+      this.#updatePopup(this.#film);
     }
 
     remove(prevFilmCardComponent);
@@ -60,10 +49,7 @@ export default class FilmPresenter {
   };
 
   #onFilmCardClick = () => {
-    this.#deletePopups();
-    this.#mode = Mode.OPEN_POPUP;
-    this.#popupPresenter = new PopupPresenter(this.#changeData, this.#handleChangeMode);
-    this.#popupPresenter.init(this.#film, this.#commentsModel);
+    this.#updatePopup(this.#film);
   };
 
   destroy = () => {
@@ -71,27 +57,20 @@ export default class FilmPresenter {
   };
 
   #handleWatchlistClick = () => {
-    this.#film.userDetails.watchList = !this.#film.userDetails.watchList;
-    this.#changeData({...this.#film});
+    this.#changeUserDetail('watchList');
   };
 
   #handleAlreadyWatchedClick = () => {
-    this.#film.userDetails.alreadyWatched = !this.#film.userDetails.alreadyWatched;
-    this.#changeData({...this.#film});
+    this.#changeUserDetail('alreadyWatched');
   };
 
   #handleFavoriteClick = () => {
-    this.#film.userDetails.favorite = !this.#film.userDetails.favorite;
-    this.#changeData({...this.#film});
+    this.#changeUserDetail('favorite');
   };
 
-  deletePopup = () => {
-    if (this.#mode === Mode.OPEN_POPUP) {
-      this.#popupPresenter.closePopup();
-    }
+  #changeUserDetail = (userDetail) => {
+    this.#film.userDetails[userDetail] = !this.#film.userDetails[userDetail];
+    this.#changeData({ ...this.#film });
   };
 
-  #handleChangeMode = () => {
-    this.#mode = Mode.DEFAULT;
-  };
 }
