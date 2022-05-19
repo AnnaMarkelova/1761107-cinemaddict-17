@@ -2,18 +2,25 @@ import { render, remove, replace } from '../framework/render.js';
 import FilmCardView from '../view/film-card-view.js';
 import PopupPresenter from './popup-presenter.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  OPEN_POPUP: 'OPEN_POPUP',
+};
 export default class FilmPresenter {
 
   #changeData = null;
+  #deletePopups = null;
   #container = null;
   #commentsModel = null;
+  #mode = Mode.DEFAULT;
   #film = null;
   #filmCardComponent = null;
   #popupPresenter = null;
 
-  constructor(container, changeData) {
+  constructor(container, changeData, deletePopups) {
     this.#container = container;
     this.#changeData = changeData;
+    this.#deletePopups = deletePopups;
   }
 
   init = (film, commentsModel) => {
@@ -53,7 +60,9 @@ export default class FilmPresenter {
   };
 
   #onFilmCardClick = () => {
-    this.#popupPresenter = new PopupPresenter(this.#changeData);
+    this.#deletePopups();
+    this.#mode = Mode.OPEN_POPUP;
+    this.#popupPresenter = new PopupPresenter(this.#changeData, this.#handleChangeMode);
     this.#popupPresenter.init(this.#film, this.#commentsModel);
   };
 
@@ -76,4 +85,13 @@ export default class FilmPresenter {
     this.#changeData({...this.#film});
   };
 
+  deletePopup = () => {
+    if (this.#mode === Mode.OPEN_POPUP) {
+      this.#popupPresenter.closePopup();
+    }
+  };
+
+  #handleChangeMode = () => {
+    this.#mode = Mode.DEFAULT;
+  };
 }

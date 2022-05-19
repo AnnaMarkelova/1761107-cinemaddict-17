@@ -9,6 +9,7 @@ const FILMS_COUNT_PER_STEP = 5;
 
 export default class FilmListPresenter {
 
+  #handleDeletePopups = null;
   #commentsModel;
   #displayedFilmsCount = 0;
   #isExtra;
@@ -22,10 +23,12 @@ export default class FilmListPresenter {
 
   #filmPresenterMap = new Map();
 
-  constructor(filmsComponent, films, commentsModel, title, hideTitle = false, isExtra = false) {
+  constructor(filmsComponent, films, commentsModel, handleDeletePopups, title, hideTitle = false, isExtra = false) {
     this.#films = films;
     this.#commentsModel = commentsModel;
     this.#filmsComponent = filmsComponent;
+
+    this.#handleDeletePopups = handleDeletePopups;
 
     this.#title = title;
     this.#hideTitle = hideTitle;
@@ -56,7 +59,7 @@ export default class FilmListPresenter {
   };
 
   #renderFilm = (film, container) => {
-    const filmPresenter = new FilmPresenter(container, this.#handleFilmChange);
+    const filmPresenter = new FilmPresenter(container, this.#handleFilmChange, this.#handleDeletePopups);
     filmPresenter.init(film, this.#commentsModel);
     this.#filmPresenterMap.set(film.id, filmPresenter);
   };
@@ -79,5 +82,7 @@ export default class FilmListPresenter {
     this.#films = updateItem(this.#films, updatedFilm);
     this.#filmPresenterMap.get(updatedFilm.id).init(updatedFilm, this.#commentsModel);
   };
+
+  getFilmPresenterMap = () => this.#filmPresenterMap;
 
 }

@@ -70,16 +70,22 @@ export default class PagePresenter {
 
   #renderFilmsList = () => {
     render(this.#filmsComponent, this.#filmListContainer);
-    this.#filmListPresenter = new FilmListPresenter(this.#filmsComponent, this.#filmsModel.films, this.#commentsModel, 'All movies. Upcoming', true);
+    this.#filmListPresenter = new FilmListPresenter(this.#filmsComponent, this.#filmsModel.films, this.#commentsModel, this.#handleDeletePopups, 'All movies. Upcoming', true, false);
     this.#filmListPresenter.init();
-    this.#filmsListTopRatedPresenter = new FilmListPresenter(this.#filmsComponent, this.#filmsModel.getMostRated(), this.#commentsModel, 'Top rated', false, true);
+    this.#filmsListTopRatedPresenter = new FilmListPresenter(this.#filmsComponent, this.#filmsModel.getMostRated(), this.#commentsModel, this.#handleDeletePopups, 'Top rated', false, true);
     this.#filmsListTopRatedPresenter.init();
-    this.#filmsListMostCommentedPresenter = new FilmListPresenter(this.#filmsComponent, this.#filmsModel.getMostCommented(), this.#commentsModel, 'Most commented', false, true);
+    this.#filmsListMostCommentedPresenter = new FilmListPresenter(this.#filmsComponent, this.#filmsModel.getMostCommented(), this.#commentsModel, this.#handleDeletePopups, 'Most commented', false, true);
     this.#filmsListMostCommentedPresenter.init();
   };
 
   #renderStatistic = () => {
     render(new StatisticsView(this.#films.length), footerElement);
+  };
+
+  #handleDeletePopups = () => {
+    this.#filmListPresenter.getFilmPresenterMap().forEach((presenter) => presenter.deletePopup());
+    this.#filmsListTopRatedPresenter.getFilmPresenterMap().forEach((presenter) => presenter.deletePopup());
+    this.#filmsListMostCommentedPresenter.getFilmPresenterMap().forEach((presenter) => presenter.deletePopup());
   };
 
 }

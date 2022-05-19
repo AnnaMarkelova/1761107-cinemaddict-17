@@ -4,7 +4,6 @@ import PopupView from '../view/popup-view.js';
 
 const footerElement = document.querySelector('.footer');
 const bodyElement = document.querySelector('body');
-
 export default class PopupPresenter {
 
   #changeData = null;
@@ -12,9 +11,11 @@ export default class PopupPresenter {
   #film = null;
   #popupComponent = null;
   #container = footerElement;
+  #changeMode =null;
 
-  constructor(changeData) {
+  constructor(changeData, changeMode) {
     this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
   init = (film, commentsModel) => {
@@ -60,10 +61,11 @@ export default class PopupPresenter {
     return filmComments;
   };
 
-  #closePopup = () => {
+  closePopup = () => {
     remove(this.#popupComponent);
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#onEscKeyDown);
+    this.#changeMode();
   };
 
   #setupFilmUserDetailHandlers = () => {
@@ -74,27 +76,27 @@ export default class PopupPresenter {
 
   #handleWatchlistClick = () => {
     this.#film.userDetails.watchList = !this.#film.userDetails.watchList;
-    this.#changeData({...this.#film});
+    this.#changeData({ ...this.#film });
   };
 
   #handleAlreadyWatchedClick = () => {
     this.#film.userDetails.alreadyWatched = !this.#film.userDetails.alreadyWatched;
-    this.#changeData({...this.#film});
+    this.#changeData({ ...this.#film });
   };
 
   #handleFavoriteClick = () => {
     this.#film.userDetails.favorite = !this.#film.userDetails.favorite;
-    this.#changeData({...this.#film});
+    this.#changeData({ ...this.#film });
   };
 
   #onFilmDetailsCloseBtnClick = () => {
-    this.#closePopup();
+    this.closePopup();
   };
 
   #onEscKeyDown = (evt) => {
     if (isEscapeEvent(evt)) {
       evt.preventDefault();
-      this.#closePopup();
+      this.closePopup();
     }
   };
 
