@@ -37,3 +37,11 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
+
+export const sortDateDown = (taskA, taskB) => {
+  if (dayjs(taskB).diff(dayjs(taskA)) >= 0) {
+    return -1;
+  } else {
+    return 1;
+  }
+};

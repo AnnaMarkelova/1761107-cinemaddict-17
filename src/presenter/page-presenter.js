@@ -1,6 +1,7 @@
 import { render } from '../framework/render.js';
-import {updateItem} from '../util/util.js';
+import { updateItem } from '../util/util.js';
 import { generateFilter } from '../mock/filter.js';
+import { SortType } from '../const.js';
 import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmListPresenter from './films-list-presenter.js';
@@ -16,6 +17,7 @@ const footerElement = document.querySelector('.footer');
 
 export default class PagePresenter {
 
+  #currentSortType = SortType.DEFAULT;
   #commentsModel;
   #films;
   #filmsComponent = new FilmsView;
@@ -26,8 +28,25 @@ export default class PagePresenter {
   #filmListPresenter;
   #filmsListTopRatedPresenter;
   #popupPresenter;
+  #sortComponent = new SortView;
 
   #filmListPresenters = [];
+
+  #SORTS = [
+    {
+      sortType: SortType.DEFAULT,
+      sortFilms: () => this.#films,
+    },
+    {
+      sortType: SortType.DATE,
+      sortFilms: () => this.#filmsModel.getSortDateRelease(),
+    },
+    {
+      sortType: SortType.RATING,
+      sortFilms: () => this.#filmsModel.getSortRated(),
+    },
+
+  ];
 
   constructor(filmListContainer, filmsModel, commentsModel) {
     this.#filmListContainer = filmListContainer;
@@ -71,45 +90,44 @@ export default class PagePresenter {
   };
 
   #renderSorts = () => {
-    render(new SortView, this.#filmListContainer);
+    render(this.#sortComponent, this.#filmListContainer);
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
+
 
   #renderFilmsList = () => {
     render(this.#filmsComponent, this.#filmListContainer);
     this.#filmListPresenter = new FilmListPresenter(
       this.#filmsComponent,
-      this.#filmsModel.films,
       this.#handleFilmChange,
       this.#handleUpdatePopup,
       'All movies. Upcoming',
       true,
       false
     );
-    this.#filmListPresenter.init();
+    this.#filmListPresenter.init(this.#filmsModel.films);
     this.#filmListPresenters.push(this.#filmListPresenter);
 
     this.#filmsListTopRatedPresenter = new FilmListPresenter(
       this.#filmsComponent,
-      this.#filmsModel.getMostRated(),
       this.#handleFilmChange,
       this.#handleUpdatePopup,
       'Top rated',
       false,
       true
     );
-    this.#filmsListTopRatedPresenter.init();
+    this.#filmsListTopRatedPresenter.init(this.#filmsModel.getMostRated());
     this.#filmListPresenters.push(this.#filmsListTopRatedPresenter);
 
     this.#filmsListMostCommentedPresenter = new FilmListPresenter(
       this.#filmsComponent,
-      this.#filmsModel.getMostCommented(),
       this.#handleFilmChange,
       this.#handleUpdatePopup,
       'Most commented',
       false,
       true
     );
-    this.#filmsListMostCommentedPresenter.init();
+    this.#filmsListMostCommentedPresenter.init(this.#filmsModel.getMostCommented());
     this.#filmListPresenters.push(this.#filmsListMostCommentedPresenter);
   };
 
@@ -135,6 +153,26 @@ export default class PagePresenter {
 
   #handleUpdatePopup = (film) => {
     this.#popupPresenter.init(film, this.#commentsModel);
+  };
+
+  #handleSortTypeChange = (sortType) => {
+
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortFilms(sortType);
+    this.#filmListPresenter.init(this.#films);
+  };
+
+  #sortFilms = (sortType) => {
+
+    const sortObject = this.#SORTS.find((item) => item.sortType === sortType);
+    if (sortObject) {
+      this.#films = sortObject.sortFilms();
+      this.#currentSortType = sortType;
+    }
+
   };
 
 }

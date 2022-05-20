@@ -15,15 +15,14 @@ export default class FilmListPresenter {
   #hideTitle;
   #films;
   #filmsComponent;
-  #filmsListComponent;
+  #filmsListComponent = null;
   #filmsListContainerComponent = new FilmsListContainerView;
   #showMoreBtnComponent = new ShowMoreButtonView;
   #title;
 
   #filmPresenterMap = new Map();
 
-  constructor(filmsComponent, films, handleFilmChange, handleUpdatePopup, title, hideTitle = false, isExtra = false) {
-    this.#films = films;
+  constructor(filmsComponent, handleFilmChange, handleUpdatePopup, title, hideTitle = false, isExtra = false) {
     this.#filmsComponent = filmsComponent;
 
     this.#handleFilmChange = handleFilmChange;
@@ -34,15 +33,24 @@ export default class FilmListPresenter {
     this.#isExtra = isExtra;
   }
 
-  init = () => {
+  init = (films) => {
+
+    this.#films = films;
+
+    if (this.#filmsListComponent === null) {
+
+      this.#filmsListComponent = new FilmsListView;
+      this.#filmsListComponent.init(this.#title, this.#hideTitle, this.#isExtra);
+      render(this.#filmsListComponent, this.#filmsComponent.element);
+      render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
+
+    } else {
+      this.#clearFilmList();
+    }
     this.#renderFilmList();
   };
 
   #renderFilmList = () => {
-    this.#filmsListComponent = new FilmsListView;
-    this.#filmsListComponent.init(this.#title, this.#hideTitle, this.#isExtra);
-    render(this.#filmsListComponent, this.#filmsComponent.element);
-    render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
 
     this.#renderGroupFilms(0, Math.min(this.#films.length, FILMS_COUNT_PER_STEP));
 
@@ -70,12 +78,12 @@ export default class FilmListPresenter {
     }
   };
 
-  // #clearFilmList = () => {
-  //   this.#filmPresenterMap.forEach((presenter) => presenter.destroy());
-  //   this.#filmPresenterMap.clear();
-  //   this.#displayedFilmsCount = 0;
-  //   remove(this.#showMoreBtnComponent);
-  // };
+  #clearFilmList = () => {
+    this.#filmPresenterMap.forEach((presenter) => presenter.destroy());
+    this.#filmPresenterMap.clear();
+    this.#displayedFilmsCount = 0;
+    remove(this.#showMoreBtnComponent);
+  };
 
   getFilmPresenterMap = () => this.#filmPresenterMap;
 

@@ -16,3 +16,9 @@ export const FilterType = {
     title: 'Favorites'
   },
 };
+
+export const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};
