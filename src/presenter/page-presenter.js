@@ -32,7 +32,7 @@ export default class PagePresenter {
 
   #filmListPresenters = [];
 
-  #SORTS = [
+  #sorts = [
     {
       sortType: SortType.DEFAULT,
       sortFilms: () => this.#films,
@@ -167,7 +167,7 @@ export default class PagePresenter {
 
   #sortFilms = (sortType) => {
 
-    const sortObject = this.#SORTS.find((item) => item.sortType === sortType);
+    const sortObject = this.#sorts.find((item) => item.sortType === sortType);
     if (sortObject) {
       this.#films = sortObject.sortFilms();
       this.#currentSortType = sortType;

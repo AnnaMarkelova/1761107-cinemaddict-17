@@ -24,24 +24,12 @@ export const humanizeDateComment = (dueDate) => dayjs(dueDate).format('YYYY/M/D 
 
 export const isEscapeEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
+export const updateItem = (items, update) => items.map((item) => {
+  if (item.id === update.id) {
+    return update;
   }
+  return item;
+});
 
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
+export const sortDateDown = (taskA, taskB) => dayjs(taskA).diff(dayjs(taskB));
 
-export const sortDateDown = (taskA, taskB) => {
-  if (dayjs(taskB).diff(dayjs(taskA)) >= 0) {
-    return -1;
-  } else {
-    return 1;
-  }
-};

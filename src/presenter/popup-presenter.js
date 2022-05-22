@@ -51,13 +51,7 @@ export default class PopupPresenter {
     render(this.#popupComponent, this.#container, 'afterend');
   };
 
-  #getFilmComments = () => {
-    const filmComments = [];
-    this.#film.comments.forEach((item) => {
-      filmComments.push(this.#commentsModel.getCommentById(item));
-    });
-    return filmComments;
-  };
+  #getFilmComments = () => this.#film.comments.map((item) => this.#commentsModel.getCommentById(item));
 
   closePopup = () => {
     remove(this.#popupComponent);
