@@ -24,12 +24,7 @@ export const humanizeDateComment = (dueDate) => dayjs(dueDate).format('YYYY/M/D 
 
 export const isEscapeEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-export const updateItem = (items, update) => items.map((item) => {
-  if (item.id === update.id) {
-    return update;
-  }
-  return item;
-});
+export const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
 
 export const sortDateDown = (taskA, taskB) => dayjs(taskA).diff(dayjs(taskB));
 

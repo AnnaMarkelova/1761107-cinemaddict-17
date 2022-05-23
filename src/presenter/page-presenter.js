@@ -100,7 +100,7 @@ export default class PagePresenter {
     this.#filmListPresenter = new FilmListPresenter(
       this.#filmsComponent,
       this.#handleFilmChange,
-      this.#handleUpdatePopup,
+      this.#handleShowPopup,
       'All movies. Upcoming',
       true,
       false
@@ -111,7 +111,7 @@ export default class PagePresenter {
     this.#filmsListTopRatedPresenter = new FilmListPresenter(
       this.#filmsComponent,
       this.#handleFilmChange,
-      this.#handleUpdatePopup,
+      this.#handleShowPopup,
       'Top rated',
       false,
       true
@@ -122,7 +122,7 @@ export default class PagePresenter {
     this.#filmsListMostCommentedPresenter = new FilmListPresenter(
       this.#filmsComponent,
       this.#handleFilmChange,
-      this.#handleUpdatePopup,
+      this.#handleShowPopup,
       'Most commented',
       false,
       true
@@ -151,7 +151,7 @@ export default class PagePresenter {
     }
   };
 
-  #handleUpdatePopup = (film) => {
+  #handleShowPopup = (film) => {
     this.#popupPresenter.init(film, this.#commentsModel);
   };
 
