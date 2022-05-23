@@ -7,10 +7,6 @@ export const getRandomNumber = (min, max) => {
   return 'Введите число в установленном диапазоне';
 };
 
-export const getUid = function () {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2);
-};
-
 export const getYearFromDate = (date) => dayjs(date).year();
 
 export const transformIntToHour = (int) => {
@@ -27,3 +23,13 @@ export const humanizeDateRelease = (dueDate) => dayjs(dueDate).format('D MMMM YY
 export const humanizeDateComment = (dueDate) => dayjs(dueDate).format('YYYY/M/D H:m');
 
 export const isEscapeEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export const updateItem = (items, update) => items.map((item) => {
+  if (item.id === update.id) {
+    return update;
+  }
+  return item;
+});
+
+export const sortDateDown = (taskA, taskB) => dayjs(taskA).diff(dayjs(taskB));
+

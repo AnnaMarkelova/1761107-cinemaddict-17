@@ -1,7 +1,8 @@
 
-import { getRandomNumber, getUid } from '../util/util.js';
+import { getRandomNumber } from '../util/util.js';
 import dayjs from 'dayjs';
 import { getComments } from './comments.js';
+import {nanoid} from 'nanoid';
 
 const DESCRIPTION = `
   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -22,9 +23,8 @@ const generateDate = (minDayGap, maxDayGap) => {
 };
 
 const generateFilm = () => {
-  const filmId = getUid();
   const film = {
-    id: filmId,
+    id: nanoid(),
     comments: getComments().map((comment) => comment.id),
     filmInfo: {
       title: 'A Little Pony Without The Carpet',
