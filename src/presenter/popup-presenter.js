@@ -1,4 +1,3 @@
-import { isEscapeEvent } from '../util/util.js';
 import { render, remove, replace } from '../framework/render.js';
 import CommentsContainerView from '../view/comments-container-view.js';
 import CommentsSectionView from '../view/comments-section-view.js';
@@ -12,7 +11,7 @@ const footerElement = document.querySelector('.footer');
 const bodyElement = document.querySelector('body');
 export default class PopupPresenter {
 
-  #changeData = null;
+  #updateData = null;
   #commentsModel = null;
   #film = null;
   #popupComponent = null;
@@ -22,8 +21,8 @@ export default class PopupPresenter {
   #commentsNewPresenter;
   #filmDetailPresenter;
 
-  constructor(changeData) {
-    this.#changeData = changeData;
+  constructor(updateData) {
+    this.#updateData = updateData;
   }
 
   init = (film, commentsModel) => {
@@ -31,15 +30,12 @@ export default class PopupPresenter {
     this.#commentsModel = commentsModel;
 
     const prevPopupComponent = this.#popupComponent;
-
     this.#popupComponent = new PopupView();
 
     if (prevPopupComponent === null) {
       this.#renderPopup();
       this.#renderFilmDetails();
       this.#renderComments();
-      this.#setupFilmUserDetailHandlers();
-      this.#setupCloseHandlers();
       return;
     }
 
@@ -47,12 +43,9 @@ export default class PopupPresenter {
       this.#renderFilmDetails();
       this.#renderComments();
       replace(this.#popupComponent, prevPopupComponent);
-      this.#setupFilmUserDetailHandlers();
-      this.#setupCloseHandlers();
+
     }
-
     remove(prevPopupComponent);
-
   };
 
   #renderPopup = () => {
@@ -62,7 +55,7 @@ export default class PopupPresenter {
   #getFilmComments = () => this.#film.comments.map((item) => this.#commentsModel.getCommentById(item));
 
   #renderFilmDetails = () => {
-    this.#filmDetailPresenter = new FilmDetailPresenter(this.#film, this.#popupComponent);
+    this.#filmDetailPresenter = new FilmDetailPresenter(this.#film, this.#popupComponent, this.#updateData, this.#closePopup);
     this.#filmDetailPresenter.init();
   };
 
@@ -80,53 +73,9 @@ export default class PopupPresenter {
     this.#commentsNewPresenter.init();
   };
 
-  closePopup = () => {
+  #closePopup = () => {
     remove(this.#popupComponent);
     this.#popupComponent = null;
-    document.body.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', this.#onEscKeyDown);
-    //clear input and object
-  };
-
-  #setupCloseHandlers = () => {
-    document.body.classList.add('hide-overflow');
-    document.addEventListener('keydown', this.#onEscKeyDown);
-    this.#filmDetailPresenter.getFilmDetailComponent().setClickHandler(this.#onFilmDetailsCloseBtnClick);
-  };
-
-  #setupFilmUserDetailHandlers = () => {
-    const filmDetailComponent = this.#filmDetailPresenter.getFilmDetailComponent();
-    filmDetailComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
-    filmDetailComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
-    filmDetailComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-  };
-
-  #handleWatchlistClick = () => {
-    this.#changeUserDetail('watchList');
-  };
-
-  #handleAlreadyWatchedClick = () => {
-    this.#changeUserDetail('alreadyWatched');
-  };
-
-  #handleFavoriteClick = () => {
-    this.#changeUserDetail('favorite');
-  };
-
-  #changeUserDetail = (userDetail) => {
-    this.#film.userDetails[userDetail] = !this.#film.userDetails[userDetail];
-    this.#changeData({ ...this.#film });
-  };
-
-  #onFilmDetailsCloseBtnClick = () => {
-    this.closePopup();
-  };
-
-  #onEscKeyDown = (evt) => {
-    if (isEscapeEvent(evt)) {
-      evt.preventDefault();
-      this.closePopup();
-    }
   };
 
 }
