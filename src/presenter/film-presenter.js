@@ -3,16 +3,16 @@ import FilmCardView from '../view/film-card-view.js';
 
 export default class FilmPresenter {
 
-  #changeData = null;
-  #updatePopup = null;
+  #updateData = null;
+  #showPopup = null;
   #container = null;
   #film = null;
   #filmCardComponent = null;
 
-  constructor(container, changeData, updatePopup) {
+  constructor(container, updateData, showPopup) {
     this.#container = container;
-    this.#changeData = changeData;
-    this.#updatePopup = updatePopup;
+    this.#updateData = updateData;
+    this.#showPopup = showPopup;
   }
 
   init = (film) => {
@@ -32,7 +32,7 @@ export default class FilmPresenter {
       replace(this.#filmCardComponent, prevFilmCardComponent);
       this.#filmCardComponent.setClickHandler(this.#onFilmCardClick);
       this.#setupPopupUserDetailHandlers();
-      this.#updatePopup(this.#film);
+      this.#showPopup(this.#film);
     }
 
     remove(prevFilmCardComponent);
@@ -49,7 +49,7 @@ export default class FilmPresenter {
   };
 
   #onFilmCardClick = () => {
-    this.#updatePopup(this.#film);
+    this.#showPopup(this.#film);
   };
 
   destroy = () => {
@@ -70,7 +70,7 @@ export default class FilmPresenter {
 
   #changeUserDetail = (userDetail) => {
     this.#film.userDetails[userDetail] = !this.#film.userDetails[userDetail];
-    this.#changeData({ ...this.#film });
+    this.#updateData({ ...this.#film });
   };
 
 }
