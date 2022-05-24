@@ -1,9 +1,10 @@
 import { getRandomNumber } from '../util/util.js';
+import { EMOTIONS } from '../const.js';
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 
 const COMMENT_COUNT_MAX = 10;
-const COMMENT_EMOTION = ['smile', 'sleeping', 'puke', 'angry'];
+
 
 const generateDate = (minDayGap, maxDayGap) => {
   const daysGap = getRandomNumber(minDayGap, maxDayGap);
@@ -15,7 +16,7 @@ const createComment = () => ({
   author: 'Ilya OReilly',
   comment: 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.',
   date: generateDate(-7, 0),
-  emotion: COMMENT_EMOTION[getRandomNumber(0, COMMENT_EMOTION.length - 1)]
+  emotion: EMOTIONS[getRandomNumber(0, EMOTIONS.length - 1)]
 });
 
 const generateComments = () => {

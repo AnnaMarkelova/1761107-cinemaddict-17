@@ -1,40 +1,91 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import { EMOTIONS } from '../const.js';
+import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
-const createPopupTemplate = () =>
-  `<div class="film-details__new-comment">
-    <div class="film-details__add-emoji-label"></div>
+const BLANK_COMMENT = {
+  id: '',
+  author: '',
+  comment: '',
+  date: null,
+  emotion: '',
+};
 
-    <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-    </label>
+const createEmotion = (emotion) => `
+  <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
+  <label class="film-details__emoji-label" for="emoji-${emotion}">
+    <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
+  </label>`;
 
-    <div class="film-details__emoji-list">
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-      <label class="film-details__emoji-label" for="emoji-smile">
-        <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+const createPopupTemplate = (state) => {
+
+  const emotion = state.emotion ? `<img src="images/emoji/${state.emotion}.png" width="55" height="55" alt="emoji-${state.emotion}">` : '';
+
+  const emojiList = EMOTIONS.map((emotionItem) => createEmotion(emotionItem)).join('');
+  return `<div class="film-details__new-comment">
+      <div class="film-details__add-emoji-label">${emotion}</div>
+
+      <label class="film-details__comment-label">
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${state.comment}</textarea>
       </label>
 
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-      <label class="film-details__emoji-label" for="emoji-sleeping">
-        <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-      </label>
+      <div class="film-details__emoji-list">
+      ${emojiList}
+      </div>
+    </div>`;
+};
 
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-      <label class="film-details__emoji-label" for="emoji-puke">
-        <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-      </label>
 
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-      <label class="film-details__emoji-label" for="emoji-angry">
-        <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-      </label>
-    </div>
-  </div>`;
+export default class CommentNewView extends AbstractStatefulView {
 
-export default class CommentNewView extends AbstractView {
+  #comment;
+
+  constructor() {
+    super();
+    this.#comment = BLANK_COMMENT;
+    this._state = CommentNewView.parseCommentToState(this.#comment);
+    this.#setInnerHandlers();
+  }
 
   get template() {
-    return createPopupTemplate();
+    return createPopupTemplate(this._state);
   }
+
+  static parseCommentToState = (comment) => ({ ...comment });
+
+  static parseStateToComment = (state) => {
+    const comment = { ...state };
+    comment.id = nanoid();
+    comment.author = 'Ilya OReilly';
+    comment.date = dayjs().toISOString();
+    return comment;
+  };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.film-details__emoji-list').addEventListener('change', this.#emojiListHandler);
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
+  };
+
+  #emojiListHandler = (evt) => {
+    const emojiItemInput = evt.target.closest('.film-details__emoji-item');
+    if (emojiItemInput) {
+      evt.preventDefault();
+      emojiItemInput.checked = true;
+      this.updateElement({
+        emotion: emojiItemInput.value,
+      });
+    }
+  };
+
+  #commentInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      comment: evt.target.value,
+    });
+  };
 
 }
