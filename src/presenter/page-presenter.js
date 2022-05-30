@@ -1,7 +1,7 @@
 import { render } from '../framework/render.js';
-import { updateItem } from '../util/util.js';
+//import { updateItem } from '../util/util.js';
 import { generateFilter } from '../mock/filter.js';
-import { SortType } from '../const.js';
+import { SortType, UpdateType, UserAction } from '../const.js';
 import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmListPresenter from './films-list-presenter.js';
@@ -51,7 +51,9 @@ export default class PagePresenter {
     this.#filmListContainer = filmListContainer;
     this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
-    this.#popupPresenter = new PopupPresenter(this.#handleFilmChange);
+    this.#popupPresenter = new PopupPresenter(this.#handleViewAction);
+
+    this.#filmsModel.addObserver(this.#handleModelEvent);
   }
 
   get films() {
@@ -67,6 +69,57 @@ export default class PagePresenter {
     this.#renderProfileView();
     this.#renderFilmsBoard();
     this.#renderStatistic();
+  };
+
+  #handleViewAction = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_FILMS:
+        this.#filmsModel.updateFilm(updateType, update);
+        break;
+    }
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        //this.#taskPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        this.#filmListPresenters.forEach((presenter) => {
+          this.#updateFilmList(presenter, data);
+        });
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
+
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  };
+
+  // #handleFilmChange = (updatedFilm) => {
+  //   this.#films = updateItem(this.#films, updatedFilm);
+
+  //   this.#filmListPresenters.forEach((presenter) => {
+  //     this.#updateFilmList(presenter, updatedFilm);
+  //   });
+
+  // };
+
+  #updateFilmList = (filmListPresenter, updatedFilm) => {
+    const filmPresenterMap = filmListPresenter.getFilmPresenterMap();
+    if (filmPresenterMap.has(updatedFilm.id)) {
+      filmPresenterMap.get(updatedFilm.id).init(updatedFilm, this.#commentsModel);
+    }
   };
 
   #renderFilmsBoard = () => {
@@ -104,7 +157,7 @@ export default class PagePresenter {
     render(this.#filmsComponent, this.#filmListContainer);
     this.#filmListPresenter = new FilmListPresenter(
       this.#filmsComponent,
-      this.#handleFilmChange,
+      this.#handleViewAction,
       this.#handleShowPopup,
       'All movies. Upcoming',
       true,
@@ -115,7 +168,7 @@ export default class PagePresenter {
 
     this.#filmsListTopRatedPresenter = new FilmListPresenter(
       this.#filmsComponent,
-      this.#handleFilmChange,
+      this.#handleViewAction,
       this.#handleShowPopup,
       'Top rated',
       false,
@@ -126,7 +179,7 @@ export default class PagePresenter {
 
     this.#filmsListMostCommentedPresenter = new FilmListPresenter(
       this.#filmsComponent,
-      this.#handleFilmChange,
+      this.#handleViewAction,
       this.#handleShowPopup,
       'Most commented',
       false,
@@ -138,22 +191,6 @@ export default class PagePresenter {
 
   #renderStatistic = () => {
     render(new StatisticsView(this.#filmsModel.films.length), footerElement);
-  };
-
-  #handleFilmChange = (updatedFilm) => {
-    this.#films = updateItem(this.#films, updatedFilm);
-
-    this.#filmListPresenters.forEach((presenter) => {
-      this.#updateFilmList(presenter, updatedFilm);
-    });
-
-  };
-
-  #updateFilmList = (filmListPresenter, updatedFilm) => {
-    const filmPresenterMap = filmListPresenter.getFilmPresenterMap();
-    if (filmPresenterMap.has(updatedFilm.id)) {
-      filmPresenterMap.get(updatedFilm.id).init(updatedFilm, this.#commentsModel);
-    }
   };
 
   #handleShowPopup = (film) => {

@@ -1,4 +1,5 @@
 import { render, remove, replace } from '../framework/render.js';
+import {UserAction, UpdateType} from '../const.js';
 import FilmCardView from '../view/film-card-view.js';
 
 export default class FilmPresenter {
@@ -70,7 +71,11 @@ export default class FilmPresenter {
 
   #changeUserDetail = (userDetail) => {
     this.#film.userDetails[userDetail] = !this.#film.userDetails[userDetail];
-    this.#updateData({ ...this.#film });
+    this.#updateData(
+      UserAction.UPDATE_FILMS,
+      UpdateType.MAJOR,
+      { ...this.#film },
+    );
   };
 
 }

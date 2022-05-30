@@ -1,5 +1,6 @@
 import { isEscapeEvent } from '../util/util.js';
 import { render } from '../framework/render.js';
+import {UserAction, UpdateType} from '../const.js';
 import FilmDetailsView from '../view/film-details-view.js';
 
 export default class FilmDetailPresenter {
@@ -54,7 +55,11 @@ export default class FilmDetailPresenter {
 
   #changeUserDetail = (userDetail) => {
     this.#film.userDetails[userDetail] = !this.#film.userDetails[userDetail];
-    this.#updateData({ ...this.#film });
+    this.#updateData(
+      UserAction.UPDATE_FILMS,
+      UpdateType.MAJOR,
+      { ...this.#film },
+    );
   };
 
   #onFilmDetailsCloseBtnClick = () => {
