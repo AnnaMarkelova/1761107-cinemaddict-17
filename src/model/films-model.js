@@ -1,8 +1,9 @@
+import Observable from '../framework/observable.js';
 import { getFilms } from '../mock/films';
 import {sortDateDown} from '../util/util.js';
 
 const EXTRA_FILMS_COUNT = 2;
-export default class FilmsModel {
+export default class FilmsModel extends Observable{
 
   #films = getFilms();
 

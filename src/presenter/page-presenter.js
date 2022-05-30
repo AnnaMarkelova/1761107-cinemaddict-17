@@ -19,7 +19,6 @@ export default class PagePresenter {
 
   #currentSortType = SortType.DEFAULT;
   #commentsModel;
-  #films;
   #filmsComponent = new FilmsView;
   #filmsModel;
   #filmsListMostCommentedPresenter;
@@ -35,7 +34,7 @@ export default class PagePresenter {
   #sorts = [
     {
       sortType: SortType.DEFAULT,
-      sortFilms: () => this.#films,
+      sortFilms: () => this.#filmsModel.films,
     },
     {
       sortType: SortType.DATE,
@@ -55,9 +54,15 @@ export default class PagePresenter {
     this.#popupPresenter = new PopupPresenter(this.#handleFilmChange);
   }
 
-  init = () => {
-    this.#films = [...this.#filmsModel.films];
+  get films() {
+    const sortObject = this.#sorts.find((item) => item.sortType === this.#currentSortType);
+    if (sortObject) {
+      return sortObject.sortFilms();
+    }
+    return this.#filmsModel.films;
+  }
 
+  init = () => {
     this.#renderMainNavigation();
     this.#renderProfileView();
     this.#renderFilmsBoard();
@@ -66,7 +71,7 @@ export default class PagePresenter {
 
   #renderFilmsBoard = () => {
 
-    if (!this.#films.length) {
+    if (!this.films.length) {
       this.#renderNoFilms();
     } else {
       this.#renderSorts();
@@ -132,7 +137,7 @@ export default class PagePresenter {
   };
 
   #renderStatistic = () => {
-    render(new StatisticsView(this.#films.length), footerElement);
+    render(new StatisticsView(this.#filmsModel.films.length), footerElement);
   };
 
   #handleFilmChange = (updatedFilm) => {
@@ -160,19 +165,8 @@ export default class PagePresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-
-    this.#sortFilms(sortType);
-    this.#filmListPresenter.init(this.#films);
-  };
-
-  #sortFilms = (sortType) => {
-
-    const sortObject = this.#sorts.find((item) => item.sortType === sortType);
-    if (sortObject) {
-      this.#films = sortObject.sortFilms();
-      this.#currentSortType = sortType;
-    }
-
+    this.#currentSortType = sortType;
+    this.#filmListPresenter.init(this.films);
   };
 
 }
