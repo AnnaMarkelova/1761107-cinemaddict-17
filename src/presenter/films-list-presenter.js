@@ -33,7 +33,7 @@ export default class FilmListPresenter {
     this.#isExtra = isExtra;
   }
 
-  init = (films) => {
+  init = (films, resetDisplayedFilmsCount = false) => {
 
     this.#films = films;
 
@@ -47,12 +47,19 @@ export default class FilmListPresenter {
     } else {
       this.#clearFilmList();
     }
-    this.#renderFilmList();
+    this.#renderFilmList(resetDisplayedFilmsCount);
   };
 
-  #renderFilmList = () => {
+  #renderFilmList = (resetDisplayedFilmsCount) => {
 
-    this.#renderGroupFilms(0, Math.min(this.#films.length, FILMS_COUNT_PER_STEP));
+    let filmsCount = resetDisplayedFilmsCount ? this.#displayedFilmsCount : FILMS_COUNT_PER_STEP;
+    if (this.#displayedFilmsCount && resetDisplayedFilmsCount) {
+      filmsCount = this.#displayedFilmsCount;
+    } else {
+      this.#displayedFilmsCount = 0;
+    }
+
+    this.#renderGroupFilms(0, Math.min(this.#films.length, filmsCount));
 
     if (this.#films.length > FILMS_COUNT_PER_STEP) {
       render(this.#showMoreBtnComponent, this.#filmsListComponent.element);
@@ -81,7 +88,7 @@ export default class FilmListPresenter {
   #clearFilmList = () => {
     this.#filmPresenterMap.forEach((presenter) => presenter.destroy());
     this.#filmPresenterMap.clear();
-    this.#displayedFilmsCount = 0;
+    // this.#displayedFilmsCount = 0;
     remove(this.#showMoreBtnComponent);
   };
 

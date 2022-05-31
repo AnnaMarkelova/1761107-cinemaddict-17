@@ -1,5 +1,5 @@
-import { render } from '../framework/render.js';
-//import { updateItem } from '../util/util.js';
+
+import { render, remove } from '../framework/render.js';
 import { generateFilter } from '../mock/filter.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 import FilmsView from '../view/films-view.js';
@@ -26,6 +26,7 @@ export default class PagePresenter {
   #filmListContainer;
   #filmListPresenter;
   #filmsListTopRatedPresenter;
+  #mainNavigationComponent;
   #popupPresenter;
   #sortComponent = new SortView;
 
@@ -86,13 +87,16 @@ export default class PagePresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
-        //this.#taskPresenter.get(data.id).init(data);
+        this.#filmListPresenters.forEach((presenter) => {
+          presenter.getFilmPresenterMap().get(data.id).init(data);
+        });
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
         break;
       case UpdateType.MAJOR:
+        this.#clearMainNavigation();
+        this.#renderMainNavigation();
         this.#filmListPresenters.forEach((presenter) => {
           this.#updateFilmList(presenter, data);
         });
@@ -105,15 +109,6 @@ export default class PagePresenter {
     // - обновить список (например, когда задача ушла в архив)
     // - обновить всю доску (например, при переключении фильтра)
   };
-
-  // #handleFilmChange = (updatedFilm) => {
-  //   this.#films = updateItem(this.#films, updatedFilm);
-
-  //   this.#filmListPresenters.forEach((presenter) => {
-  //     this.#updateFilmList(presenter, updatedFilm);
-  //   });
-
-  // };
 
   #updateFilmList = (filmListPresenter, updatedFilm) => {
     const filmPresenterMap = filmListPresenter.getFilmPresenterMap();
@@ -135,7 +130,12 @@ export default class PagePresenter {
 
   #renderMainNavigation = () => {
     const filters = generateFilter(this.#filmsModel);
-    render(new MainNavigationView(filters), mainElement);
+    this.#mainNavigationComponent = new MainNavigationView(filters);
+    render(this.#mainNavigationComponent, mainElement, 'AFTERBEGIN');
+  };
+
+  #clearMainNavigation = () => {
+    remove(this.#mainNavigationComponent);
   };
 
   #renderProfileView = () => {
@@ -203,7 +203,7 @@ export default class PagePresenter {
       return;
     }
     this.#currentSortType = sortType;
-    this.#filmListPresenter.init(this.films);
+    this.#filmListPresenter.init(this.films, true);
   };
 
 }
