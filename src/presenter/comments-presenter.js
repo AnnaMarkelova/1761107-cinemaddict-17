@@ -7,12 +7,14 @@ export default class CommentsPresenter {
   #comments;
   #commentsComponent;
   #container;
+  #updateComments;
 
   #commentPresenterMap = new Map();
 
-  constructor(comments, container) {
+  constructor(comments, container, updateComments) {
     this.#container = container;
     this.#comments = comments;
+    this.#updateComments = updateComments;
   }
 
   init = () => {
@@ -26,7 +28,7 @@ export default class CommentsPresenter {
   };
 
   #renderComment = (commentItem) => {
-    const commentPresenter = new CommentPresenter(commentItem, this.#commentsComponent);
+    const commentPresenter = new CommentPresenter(commentItem, this.#commentsComponent, this.#updateComments);
     commentPresenter.init(commentItem);
     this.#commentPresenterMap.set(commentItem.id, commentPresenter);
   };

@@ -14,18 +14,16 @@ export default class FilmsModel extends Observable {
   updateFilm = (updateType, update) => {
     this.#films = this.#films.map((item) => item.id === update.id ? update : item);
 
-    // const index = items.findIndex((item) => item.id === update.id);
-
-    // if (index === -1) {
-    //   return items;
-    // }
-    // return [
-    //   ...items.slice(0, index),
-    //   update,
-    //   ...items.slice(index + 1),
-    // ];
-
     this._notify(updateType, update);
+  };
+
+  deleteComment = (film, idComment) => {
+
+    // const indexComment = film.comments.findIndex((commentItem) => commentItem === idComment);
+    // if (indexComment === -1) {
+    //   throw new Error('Can\'t delete unexisting comment');
+    // }
+    film.comments = film.comments.filter((item) => item !== idComment);
   };
 
   getWatchList = () => this.#films.filter((film) => film.userDetails.watchList);

@@ -88,7 +88,6 @@ export default class FilmListPresenter {
   #clearFilmList = () => {
     this.#filmPresenterMap.forEach((presenter) => presenter.destroy());
     this.#filmPresenterMap.clear();
-    // this.#displayedFilmsCount = 0;
     remove(this.#showMoreBtnComponent);
   };
 

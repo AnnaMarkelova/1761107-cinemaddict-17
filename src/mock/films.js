@@ -1,7 +1,7 @@
 
 import { getRandomNumber } from '../util/util.js';
 import dayjs from 'dayjs';
-import { getComments } from './comments.js';
+import { generateComments } from './comments.js';
 import {nanoid} from 'nanoid';
 
 const DESCRIPTION = `
@@ -25,7 +25,7 @@ const generateDate = (minDayGap, maxDayGap) => {
 const generateFilm = () => {
   const film = {
     id: nanoid(),
-    comments: getComments().map((comment) => comment.id),
+    comments: generateComments().map((comment) => comment.id),
     filmInfo: {
       title: 'A Little Pony Without The Carpet',
       alternativeTitle: 'Laziness Who Sold Themselves',

@@ -55,6 +55,7 @@ export default class PagePresenter {
     this.#popupPresenter = new PopupPresenter(this.#handleViewAction);
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleModelEvent);
   }
 
   get films() {
@@ -77,22 +78,35 @@ export default class PagePresenter {
       case UserAction.UPDATE_FILMS:
         this.#filmsModel.updateFilm(updateType, update);
         break;
+      case UserAction.DELETE_COMMENT:
+        this.#commentsModel.deleteComment(updateType, update);
+        break;
     }
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
   };
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#filmListPresenters.forEach((presenter) => {
-          presenter.getFilmPresenterMap().get(data.id).init(data);
-        });
-        break;
-      case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
+        {
+          const film = this.films.filter((filmItem) => {
+            if (filmItem.comments.filter(
+              (commentItem) => commentItem === data.id).length > 0) {
+              return true;
+            }
+            return false;
+          });
+          //удаляет комментарий в фильме
+          this.#filmsModel.deleteComment(film[0], data.id);
+          //обновляет карточки фильмов
+          this.#filmListPresenters.forEach((presenter) => {
+            const filmPresenter = presenter.getFilmPresenterMap().get(film[0].id);
+            if (filmPresenter) {
+              filmPresenter.init(film[0]);
+            }
+          });
+          //перерисовывает most commented
+          //this.#filmsListMostCommentedPresenter.init(this.#filmsModel.getMostCommented());
+        }
         break;
       case UpdateType.MAJOR:
         this.#clearMainNavigation();
@@ -100,14 +114,8 @@ export default class PagePresenter {
         this.#filmListPresenters.forEach((presenter) => {
           this.#updateFilmList(presenter, data);
         });
-        // - обновить всю доску (например, при переключении фильтра)
         break;
     }
-
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
   };
 
   #updateFilmList = (filmListPresenter, updatedFilm) => {
