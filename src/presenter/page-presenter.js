@@ -81,31 +81,32 @@ export default class PagePresenter {
       case UserAction.DELETE_COMMENT:
         this.#commentsModel.deleteComment(updateType, update);
         break;
+      case UserAction.ADD_COMMENT:
+        this.#commentsModel.addComment(updateType, update);
+        break;
     }
   };
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
-      case UpdateType.PATCH:
+      case UpdateType.MINOR:
         {
-          const film = this.films.filter((filmItem) => {
-            if (filmItem.comments.filter(
-              (commentItem) => commentItem === data.id).length > 0) {
-              return true;
-            }
-            return false;
-          });
-          //удаляет комментарий в фильме
-          this.#filmsModel.deleteComment(film[0], data.id);
+          if (data.isDelete) {
+            //удаляет комментарий в фильме
+            this.#filmsModel.deleteComment(data.film, data.comment.id);
+          } else {
+            //добавляет комментарий в фильме
+            this.#filmsModel.addComment(data.film, data.comment.id);
+          }
           //обновляет карточки фильмов
           this.#filmListPresenters.forEach((presenter) => {
-            const filmPresenter = presenter.getFilmPresenterMap().get(film[0].id);
+            const filmPresenter = presenter.getFilmPresenterMap().get(data.film.id);
             if (filmPresenter) {
-              filmPresenter.init(film[0]);
+              filmPresenter.init(data.film, true);
             }
           });
           //перерисовывает most commented
-          //this.#filmsListMostCommentedPresenter.init(this.#filmsModel.getMostCommented());
+          this.#filmsListMostCommentedPresenter.init(this.#filmsModel.getMostCommented());
         }
         break;
       case UpdateType.MAJOR:
@@ -211,7 +212,7 @@ export default class PagePresenter {
       return;
     }
     this.#currentSortType = sortType;
-    this.#filmListPresenter.init(this.films, true);
+    this.#filmListPresenter.init(this.films);
   };
 
 }

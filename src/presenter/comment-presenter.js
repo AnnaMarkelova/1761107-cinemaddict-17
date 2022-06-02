@@ -7,12 +7,14 @@ export default class CommentPresenter {
   #comment;
   #commentComponent;
   #container;
+  #film;
   #updateComments;
 
-  constructor(comment, container, updateComments) {
+  constructor(comment, film, container, updateComments) {
     this.#container = container;
     this.#comment = comment;
     this.#updateComments = updateComments;
+    this.#film = film;
   }
 
   init = () => {
@@ -32,8 +34,12 @@ export default class CommentPresenter {
   #handlerClick = () => {
     this.#updateComments(
       UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
-      this.#comment,
+      UpdateType.MINOR,
+      {
+        film: this.#film,
+        comment: this.#comment,
+        isDelete: true
+      },
     );
   };
 }

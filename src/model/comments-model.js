@@ -16,7 +16,13 @@ export default class CommentsModel extends Observable {
     //   throw new Error('Can\'t delete unexisting comment');
     // }
 
-    this.#comments = this.#comments.filter((item) => item.id !== update.id);
+    this.#comments = this.#comments.filter((item) => item.id !== update.comment.id);
+
+    this._notify(updateType, update);
+  };
+
+  addComment = (updateType, update) => {
+    this.#comments.push(update.comment);
 
     this._notify(updateType, update);
   };

@@ -66,10 +66,10 @@ export default class PopupPresenter {
     render(this.commentsSectionComponent, this.commentsContainerComponent.element);
     render(new CommentsTitleView(this.#commentsModel.getCommentsOfFilm(this.#film.comments)), this.commentsSectionComponent.element);
 
-    this.#commentsPresenter = new CommentsPresenter(this.#getFilmComments(), this.commentsSectionComponent, this.#updateData);
+    this.#commentsPresenter = new CommentsPresenter(this.#getFilmComments(), this.#film, this.commentsSectionComponent, this.#updateData);
     this.#commentsPresenter.init();
 
-    this.#commentsNewPresenter = new CommentsNewPresenter(this.commentsSectionComponent);
+    this.#commentsNewPresenter = new CommentsNewPresenter(this.commentsSectionComponent, this.#film, this.#updateData);
     this.#commentsNewPresenter.init();
   };
 
