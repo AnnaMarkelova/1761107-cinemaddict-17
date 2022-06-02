@@ -1,16 +1,20 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createFilterItemTemplate = (filter, isChecked) => {
-  const { path, name, count } = filter;
-  if (isChecked) {
-    return `<a href="#${path}" class="main-navigation__item main-navigation__item--active">${name}</a>`;
-  }
-  return `<a href="#${path}" class="main-navigation__item">${name}<span class="main-navigation__item-count">${count}</span></a>`;
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const { type, name, count } = filter;
+
+  const countSection = `<span class="main-navigation__item-count">${count}</span>`;
+
+  return `<a href="#${type}" class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}" data-filter-type="${type}">
+    ${name}
+    ${type === 'all' ? '' : countSection}
+    </a>`;
+
 };
 
-const createMainNavigationTemplate = (filterItems) => {
+const createMainNavigationTemplate = (filterItems, currentFilterType) => {
 
-  const filtersTemplate = filterItems.map((filter, index) => createFilterItemTemplate(filter, index === 0)).join('');
+  const filtersTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join('');
   return `<nav class="main-navigation"> ${filtersTemplate}</nav>`;
 
 };
@@ -18,14 +22,26 @@ const createMainNavigationTemplate = (filterItems) => {
 export default class MainNavigationView extends AbstractView {
 
   #filters = null;
+  #currentFilterType = null;
 
-  constructor(filters) {
+  constructor(filters, currentFilterType) {
     super();
     this.#filters = filters;
+    this.#currentFilterType = currentFilterType;
   }
 
   get template() {
-    return createMainNavigationTemplate(this.#filters);
+    return createMainNavigationTemplate(this.#filters, this.#currentFilterType);
   }
+
+  setFilterTypeChangeHandler = (callback) => {
+    this._callback.filterChange = callback;
+    this.element.addEventListener('click', this.#filterTypeChangeHandler);
+  };
+
+  #filterTypeChangeHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.filterChange(evt.target.dataset.filterType);
+  };
 
 }

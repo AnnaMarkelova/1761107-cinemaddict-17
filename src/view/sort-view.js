@@ -1,18 +1,40 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {SortType} from '../const.js';
+import { SortType } from '../const.js';
 
-const createSortTemplate = () =>
-  `<ul class="sort">
-  <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
-  <li><a href="#" class="sort__button" data-sort-type="${SortType.DATE}">Sort by date</a></li>
-  <li><a href="#" class="sort__button" data-sort-type="${SortType.RATING}">Sort by rating</a></li>
-  </ul>`;
+const createSortItemTemplate = (sortTypeItem, currentSortType) =>
+  `<li><a href="#" class="sort__button ${currentSortType === sortTypeItem ? 'sort__button--active' : ''}" data-sort-type="${sortTypeItem}">Sort by ${sortTypeItem}</a></li>`;
 
-export default class SortView extends AbstractView{
+const createSortTemplate = (currentSortType, sortList) => {
+  const SortsTemplate = [];
+  Object.keys(sortList).forEach((sortTypeItem) => {
+    SortsTemplate.push(createSortItemTemplate(sortList[sortTypeItem], currentSortType));
+  });
+  return `<ul class="sort">${SortsTemplate.join('')}</ul>`;
+};
+export default class SortView extends AbstractView {
+
+  #currentSortType = SortType.DEFAULT;
 
   get template() {
-    return createSortTemplate();
+    return createSortTemplate(this.#currentSortType, SortType);
   }
+
+  init = (currentSortType) => {
+    this.#currentSortType = currentSortType;
+    this.#rerenderElement();
+  };
+
+  #rerenderElement = () => {
+    const prevElement = this.element;
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.element;
+
+    parent.replaceChild(newElement, prevElement);
+
+    this.setSortTypeChangeHandler();
+  };
 
   setSortTypeChangeHandler = (callback) => {
     this._callback.sortTypeChange = callback;

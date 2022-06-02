@@ -1,14 +1,16 @@
+import { render } from '../framework/render.js';
+import { FilterType, SortType, UpdateType, UserAction } from '../const.js';
+import { getFilters } from '../util/filter.js';
+import { sortDateDown } from '../util/util.js';
 
-import { render, remove } from '../framework/render.js';
-import { generateFilter } from '../mock/filter.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import FilmListPresenter from './films-list-presenter.js';
+import MainNavigationPresenter from './main-navigation-presenter.js';
+import PopupPresenter from './popup-presenter.js';
+
 import FilmsView from '../view/films-view.js';
 import FilmsListView from '../view/films-list-view.js';
-import FilmListPresenter from './films-list-presenter.js';
 import SortView from '../view/sort-view.js';
 import StatisticsView from '../view/statistics-view.js';
-import MainNavigationView from '../view/main-navigation-view.js';
-import PopupPresenter from './popup-presenter.js';
 import ProfileView from '../view/profile-view.js';
 
 const mainElement = document.querySelector('.main');
@@ -17,53 +19,60 @@ const footerElement = document.querySelector('.footer');
 
 export default class PagePresenter {
 
-  #currentSortType = SortType.DEFAULT;
   #commentsModel;
-  #filmsComponent = new FilmsView;
   #filmsModel;
+  #filterModel;
+
   #filmsListMostCommentedPresenter;
-  #filmsListComponent = new FilmsListView;
-  #filmListContainer;
   #filmListPresenter;
   #filmsListTopRatedPresenter;
-  #mainNavigationComponent;
   #popupPresenter;
+
+  #filmsComponent = new FilmsView;
+  #filmsListComponent = new FilmsListView;
   #sortComponent = new SortView;
+
+
+  #currentSortType = SortType.DEFAULT;
+
+  #filmListContainer;
 
   #filmListPresenters = [];
 
   #sorts = [
     {
       sortType: SortType.DEFAULT,
-      sortFilms: () => this.#filmsModel.films,
+      sortFilms: (filteredFilms) => filteredFilms,
     },
     {
       sortType: SortType.DATE,
-      sortFilms: () => this.#filmsModel.getSortDateRelease(),
+      sortFilms: (filteredFilms) => filteredFilms.slice().sort((filmA, filmB) => sortDateDown(filmB.filmInfo.release.date, filmA.filmInfo.release.date)),
     },
     {
       sortType: SortType.RATING,
-      sortFilms: () => this.#filmsModel.getSortRated(),
+      sortFilms: (filteredFilms) => filteredFilms.slice().sort((filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating),
     },
-
   ];
 
-  constructor(filmListContainer, filmsModel, commentsModel) {
+  constructor(filmListContainer, filmsModel, commentsModel, filterModel) {
     this.#filmListContainer = filmListContainer;
     this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
+    this.#filterModel = filterModel;
     this.#popupPresenter = new PopupPresenter(this.#handleViewAction);
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#commentsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get films() {
     const sortObject = this.#sorts.find((item) => item.sortType === this.#currentSortType);
+    const filteredFilms = getFilters().get(this.#filterModel.filter)(this.#filmsModel);
     if (sortObject) {
-      return sortObject.sortFilms();
+      return sortObject.sortFilms(filteredFilms);
     }
-    return this.#filmsModel.films;
+    return filteredFilms;
   }
 
   init = () => {
@@ -89,6 +98,10 @@ export default class PagePresenter {
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
+      case UpdateType.PATCH:
+        this.#currentSortType = SortType.DEFAULT;
+        this.#updateMainFilmsList(data);
+        break;
       case UpdateType.MINOR:
         {
           if (data.isDelete) {
@@ -110,11 +123,13 @@ export default class PagePresenter {
         }
         break;
       case UpdateType.MAJOR:
-        this.#clearMainNavigation();
-        this.#renderMainNavigation();
-        this.#filmListPresenters.forEach((presenter) => {
-          this.#updateFilmList(presenter, data);
-        });
+        // this.#filmListPresenters.forEach((presenter) => {
+        //   this.#updateFilmList(presenter, data);
+        // });
+        //this.#updateFilmsListBoard(this.films);
+        this.#filmListPresenter.init(this.films, true);
+        this.#updateFilmList(this.#filmsListTopRatedPresenter, data);
+        this.#updateFilmList(this.#filmsListMostCommentedPresenter, data);
         break;
     }
   };
@@ -126,10 +141,22 @@ export default class PagePresenter {
     }
   };
 
+  #updateMainFilmsList = (currentFilterType) => {
+
+    if (!this.films.length) {
+      this.#renderNoFilms(currentFilterType);
+      this.#filmsListComponent.removeElement();
+      this.#filmListPresenter.removeElement();
+    } else {
+      this.#renderSorts(true);
+      this.#filmListPresenter.init(this.films);
+    }
+  };
+
   #renderFilmsBoard = () => {
 
     if (!this.films.length) {
-      this.#renderNoFilms();
+      this.#renderNoFilms(FilterType.ALL);
     } else {
       this.#renderSorts();
       this.#renderFilmsList();
@@ -138,29 +165,27 @@ export default class PagePresenter {
   };
 
   #renderMainNavigation = () => {
-    const filters = generateFilter(this.#filmsModel);
-    this.#mainNavigationComponent = new MainNavigationView(filters);
-    render(this.#mainNavigationComponent, mainElement, 'AFTERBEGIN');
-  };
-
-  #clearMainNavigation = () => {
-    remove(this.#mainNavigationComponent);
+    this.#filmListPresenter = new MainNavigationPresenter(mainElement, this.#filterModel, this.#filmsModel);
+    this.#filmListPresenter.init();
   };
 
   #renderProfileView = () => {
     render(new ProfileView(), headerElement);
   };
 
-  #renderNoFilms = () => {
-    this.#filmsListComponent.init('There are no movies in our database', false);
+  #renderNoFilms = (currentFilterType) => {
+    this.#filmsListComponent.init(currentFilterType, false);
     render(this.#filmsListComponent, this.#filmsComponent.element);
   };
 
-  #renderSorts = () => {
-    render(this.#sortComponent, this.#filmListContainer);
+  #renderSorts = (isUpdate = false) => {
+    if (isUpdate) {
+      this.#sortComponent.init(this.#currentSortType);
+    } else {
+      render(this.#sortComponent, this.#filmListContainer);
+    }
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
-
 
   #renderFilmsList = () => {
     render(this.#filmsComponent, this.#filmListContainer);
@@ -168,18 +193,18 @@ export default class PagePresenter {
       this.#filmsComponent,
       this.#handleViewAction,
       this.#handleShowPopup,
-      'All movies. Upcoming',
+      'AllMovie',
       true,
       false
     );
-    this.#filmListPresenter.init(this.#filmsModel.films);
+    this.#filmListPresenter.init(this.films);
     this.#filmListPresenters.push(this.#filmListPresenter);
 
     this.#filmsListTopRatedPresenter = new FilmListPresenter(
       this.#filmsComponent,
       this.#handleViewAction,
       this.#handleShowPopup,
-      'Top rated',
+      'TopRated',
       false,
       true
     );
@@ -190,7 +215,7 @@ export default class PagePresenter {
       this.#filmsComponent,
       this.#handleViewAction,
       this.#handleShowPopup,
-      'Most commented',
+      'MostCommented',
       false,
       true
     );

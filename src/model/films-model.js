@@ -1,6 +1,5 @@
 import Observable from '../framework/observable.js';
 import { getFilms } from '../mock/films';
-import { sortDateDown } from '../util/util.js';
 
 const EXTRA_FILMS_COUNT = 2;
 export default class FilmsModel extends Observable {
@@ -41,8 +40,6 @@ export default class FilmsModel extends Observable {
   getMostCommented = () => this.#films.slice().sort((filmA, filmB) => filmB.comments.length - filmA.comments.length).slice(0, EXTRA_FILMS_COUNT);
 
   getMostRated = () => this.getSortRated().slice(0, EXTRA_FILMS_COUNT);
-
-  getSortDateRelease = () => this.#films.slice().sort((filmA, filmB) => sortDateDown(filmB.filmInfo.release.date, filmA.filmInfo.release.date));
 
   getSortRated = () => this.#films.slice().sort((filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating);
 }
