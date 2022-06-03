@@ -102,7 +102,6 @@ export default class CommentNewView extends AbstractStatefulView {
   #ctrlEnterKeyDownHandler = (evt) => {
     if (isCtrlEnterEvent(evt) || isCommandEnterEvent(evt)) {
       evt.preventDefault();
-      //document.querySelector('.film-details').removeEventListener('keydown', this.#ctrlEnterKeyDownHandler);
       this._callback.click(CommentNewView.parseStateToComment(this._state));
     }
   };
