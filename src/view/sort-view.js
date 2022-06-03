@@ -4,7 +4,12 @@ import { SortType } from '../const.js';
 const createSortItemTemplate = (sortTypeItem, currentSortType) =>
   `<li><a href="#" class="sort__button ${currentSortType === sortTypeItem ? 'sort__button--active' : ''}" data-sort-type="${sortTypeItem}">Sort by ${sortTypeItem}</a></li>`;
 
-const createSortTemplate = (currentSortType, sortList) => {
+const createSortTemplate = (currentSortType, sortList, isNoList) => {
+
+  if (isNoList) {
+    return '<div></div>';
+  }
+
   const SortsTemplate = [];
   Object.keys(sortList).forEach((sortTypeItem) => {
     SortsTemplate.push(createSortItemTemplate(sortList[sortTypeItem], currentSortType));
@@ -14,26 +19,24 @@ const createSortTemplate = (currentSortType, sortList) => {
 export default class SortView extends AbstractView {
 
   #currentSortType = SortType.DEFAULT;
+  #isNoList;
+
+  constructor(isNoList = false) {
+    super();
+    this.#isNoList = isNoList;
+  }
 
   get template() {
-    return createSortTemplate(this.#currentSortType, SortType);
+
+    return createSortTemplate(this.#currentSortType, SortType, this.#isNoList);
+
   }
 
   init = (currentSortType) => {
+
     this.#currentSortType = currentSortType;
-    this.#rerenderElement();
-  };
-
-  #rerenderElement = () => {
-    const prevElement = this.element;
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.element;
-
-    parent.replaceChild(newElement, prevElement);
-
     this.setSortTypeChangeHandler();
+
   };
 
   setSortTypeChangeHandler = (callback) => {
@@ -44,11 +47,6 @@ export default class SortView extends AbstractView {
   #sortTypeChangeHandler = (evt) => {
     if (evt.target.closest('.sort__button')) {
       evt.preventDefault();
-
-      const previousLink = document.querySelector('.sort__button--active');
-      previousLink.classList.remove('sort__button--active');
-      evt.target.closest('.sort__button').classList.add('sort__button--active');
-
       this._callback.sortTypeChange(evt.target.closest('.sort__button').dataset.sortType);
     }
   };

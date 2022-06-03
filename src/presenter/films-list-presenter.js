@@ -1,5 +1,6 @@
-import { render, remove } from '../framework/render.js';
+import { render, remove, RenderPosition } from '../framework/render.js';
 import FilmsListView from '../view/films-list-view.js';
+import FilmsListTitleView from '../view/films-list-title-view.js';
 import FilmsListContainerView from '../view/films-list-container-view.js';
 import FilmPresenter from './film-presenter.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
@@ -8,17 +9,21 @@ const FILMS_COUNT_PER_STEP = 5;
 
 export default class FilmListPresenter {
 
+  #currentFilterType;
   #handleShowPopup = null;
   #handleFilmChange = null;
+
   #displayedFilmsCount = 0;
-  #isExtra;
   #hideTitle;
+  #isExtra;
   #films;
+  #title;
+
   #filmsComponent;
   #filmsListComponent = null;
+  #filmsListTitleComponent = null;
   #filmsListContainerComponent = new FilmsListContainerView;
   #showMoreBtnComponent = new ShowMoreButtonView;
-  #title;
 
   #filmPresenterMap = new Map();
 
@@ -33,21 +38,42 @@ export default class FilmListPresenter {
     this.#isExtra = isExtra;
   }
 
-  init = (films, resetDisplayedFilmsCount = false) => {
+  init = (films, currentFilterType = null, resetDisplayedFilmsCount = false) => {
 
     this.#films = films;
+    this.#currentFilterType = currentFilterType;
 
     if (this.#filmsListComponent === null) {
-
-      this.#filmsListComponent = new FilmsListView;
-      this.#filmsListComponent.init(this.#title, this.#hideTitle, this.#isExtra);
-      render(this.#filmsListComponent, this.#filmsComponent.element);
-      render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
-
+      this.#renderFilmListBoard();
     } else {
       this.#clearFilmList();
     }
-    this.#renderFilmList(resetDisplayedFilmsCount);
+
+    this.#renderListTitle();
+
+    if (this.#films.length > 0) {
+      this.#renderFilmList(resetDisplayedFilmsCount);
+    }
+  };
+
+  #renderFilmListBoard = () => {
+    this.#filmsListComponent = new FilmsListView;
+    this.#filmsListTitleComponent = new FilmsListTitleView;
+    this.#filmsListComponent.init(this.#isExtra);
+    render(this.#filmsListComponent, this.#filmsComponent.element);
+    if (this.#films.length > 0) {
+      render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
+    }
+  };
+
+  #renderListTitle = () => {
+    if (this.#films.length <= 0 && !this.#isExtra) {
+      this.#filmsListTitleComponent.init(this.#currentFilterType, false);
+    } else {
+      this.#filmsListTitleComponent.init(this.#title, this.#hideTitle);
+    }
+
+    render(this.#filmsListTitleComponent, this.#filmsListComponent.element, RenderPosition.AFTERBEGIN);
   };
 
   #renderFilmList = (resetDisplayedFilmsCount) => {
@@ -86,6 +112,7 @@ export default class FilmListPresenter {
   };
 
   #clearFilmList = () => {
+    remove(this.#filmsListTitleComponent);
     this.#filmPresenterMap.forEach((presenter) => presenter.destroy());
     this.#filmPresenterMap.clear();
     remove(this.#showMoreBtnComponent);
