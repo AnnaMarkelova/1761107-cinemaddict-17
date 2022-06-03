@@ -126,6 +126,7 @@ export default class PagePresenter {
       case UpdateType.MAJOR:
         this.#renderSorts();
         this.#filmListPresenter.init(this.films, this.#filterModel.filter, true);
+        this.#popupPresenter.init(data, this.#commentsModel);
         this.#updateFilm(this.#filmsListTopRatedPresenter, data);
         this.#updateFilm(this.#filmsListMostCommentedPresenter, data);
         break;
@@ -143,10 +144,14 @@ export default class PagePresenter {
 
     if (this.films.length) {
       this.#renderSorts();
-      this.#renderFilmsList();
-      this.#renderExtraFilmsList();
+      render(this.#filmsComponent, this.#filmListContainer);
+      this.#filmListPresenter = this.#renderFilmsListPresenter(this.films, 'AllMovie', true, false, this.#filterModel.filter);
+      this.#filmsListTopRatedPresenter = this.#renderFilmsListPresenter(this.#filmsModel.getMostRated(), 'TopRated', false, true, null);
+      this.#filmsListMostCommentedPresenter = this.#renderFilmsListPresenter(this.#filmsModel.getMostCommented(), 'MostCommented', false, true, null);
     } else {
-      this.#renderFilmsList();
+      render(this.#filmsComponent, this.#filmListContainer);
+
+      this.#filmListPresenter = this.#renderFilmsListPresenter(this.films, 'AllMovie', true, false, this.#filterModel.filter);
     }
 
   };
@@ -184,61 +189,18 @@ export default class PagePresenter {
     remove(prevSortComponent);
   };
 
-  #renderFilmsList = () => {
-    render(this.#filmsComponent, this.#filmListContainer);
-    this.#filmListPresenter = new FilmListPresenter(
+  #renderFilmsListPresenter = (films, title, hideTitle, isExtra, currentFilterType) => {
+    const newPresenter = new FilmListPresenter(
       this.#filmsComponent,
       this.#handleViewAction,
       this.#handleShowPopup,
-      'AllMovie',
-      true,
-      false
+      title,
+      hideTitle,
+      isExtra
     );
-    this.#filmListPresenter.init(this.films, this.#filterModel.filter);
-    this.#filmListPresentersMap.push(this.#filmListPresenter);
-  };
-
-  // #renderFilmsList = (presenter, films, title, hideTitle, isExtra, currentFilterType) => {
-  //   render(this.#filmsComponent, this.#filmListContainer);
-  //   presenter = new FilmListPresenter(
-  //     this.#filmsComponent,
-  //     this.#handleViewAction,
-  //     this.#handleShowPopup,
-  //     title,
-  //     hideTitle,
-  //     isExtra
-  //   );
-  //   presenter.init(films, currentFilterType);
-  //   this.#filmListPresentersMap.push(presenter);
-  // };
-
-
-  // this.#renderFilmsList(this.#filmListPresenter, this.films,  'AllMovie', true, false, this.#filterModel.filter);
-  // this.#renderFilmsList(this.#filmsListTopRatedPresenter, this.#filmsModel.getMostRated(),  'TopRated', false, true, null);
-  // this.#renderFilmsList(this.#filmsListMostCommentedPresenter, this.#filmsModel.getMostCommented(),  'MostCommented', false, true, null);
-
-  #renderExtraFilmsList = () => {
-    this.#filmsListTopRatedPresenter = new FilmListPresenter(
-      this.#filmsComponent,
-      this.#handleViewAction,
-      this.#handleShowPopup,
-      'TopRated',
-      false,
-      true
-    );
-    this.#filmsListTopRatedPresenter.init(this.#filmsModel.getMostRated());
-    this.#filmListPresentersMap.push(this.#filmsListTopRatedPresenter);
-
-    this.#filmsListMostCommentedPresenter = new FilmListPresenter(
-      this.#filmsComponent,
-      this.#handleViewAction,
-      this.#handleShowPopup,
-      'MostCommented',
-      false,
-      true
-    );
-    this.#filmsListMostCommentedPresenter.init(this.#filmsModel.getMostCommented());
-    this.#filmListPresentersMap.push(this.#filmsListMostCommentedPresenter);
+    newPresenter.init(films, currentFilterType);
+    this.#filmListPresentersMap.push(newPresenter);
+    return newPresenter;
   };
 
   #renderProfileView = () => {

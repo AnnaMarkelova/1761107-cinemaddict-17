@@ -2,7 +2,7 @@ import { render } from '../framework/render.js';
 import { UserAction, UpdateType } from '../const.js';
 import CommentNewView from '../view/comment-new-view.js';
 
-export default class FilmDetailPresenter {
+export default class CommentNewPresenter {
 
   #container;
   #commentNewComponent;
@@ -17,9 +17,9 @@ export default class FilmDetailPresenter {
 
   init = () => {
 
-    this.#commentNewComponent = new CommentNewView();
+    this.#commentNewComponent = new CommentNewView(this.#handlerKeydown);
     this.#renderCommentNew();
-    this.#setupCommentHandlers();
+    //this.#setupCommentHandlers();
   };
 
   #renderCommentNew = () => {
@@ -28,17 +28,17 @@ export default class FilmDetailPresenter {
 
   getFilmDetailComponent = () => this.#commentNewComponent;
 
-  #setupCommentHandlers = () => {
-    this.#commentNewComponent.setClickHandler(this.#handlerClick);
-  };
+  // #setupCommentHandlers = () => {
+  //   this.#commentNewComponent.setClickHandler(this.#handlerClick);
+  // };
 
-  #handlerClick = () => {
+  #handlerKeydown = (newComment) => {
     this.#updateComments(
       UserAction.ADD_COMMENT,
       UpdateType.MINOR,
       {
         film: this.#film,
-        comment: this.#commentNewComponent.parseStateToComment(),
+        comment: newComment,
         isDelete: false
       },
     );

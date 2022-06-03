@@ -24,6 +24,7 @@ export const humanizeDateComment = (dueDate) => dayjs(dueDate).format('YYYY/M/D 
 
 export const isEscapeEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 export const isCtrlEnterEvent = (evt) => evt.ctrlKey && evt.key === 'Enter';
+export const isCommandEnterEvent = (evt) => evt.metaKey && evt.key === 'Enter';
 
 export const sortDateDown = (taskA, taskB) => dayjs(taskA).diff(dayjs(taskB));
 
