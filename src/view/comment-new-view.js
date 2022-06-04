@@ -1,4 +1,5 @@
 import { EMOTIONS } from '../const.js';
+import { isCtrlEnterEvent, isCommandEnterEvent } from '../util/util.js';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
@@ -39,12 +40,16 @@ const createPopupTemplate = (state) => {
 export default class CommentNewView extends AbstractStatefulView {
 
   #comment;
+  #handlerKeydown;
+  _state;
 
-  constructor() {
+  constructor(handlerKeydown) {
     super();
     this.#comment = BLANK_COMMENT;
+    this.#handlerKeydown = handlerKeydown;
     this._state = CommentNewView.parseCommentToState(this.#comment);
     this.#setInnerHandlers();
+    this.#setKeydownHandler();
   }
 
   get template() {
@@ -63,11 +68,17 @@ export default class CommentNewView extends AbstractStatefulView {
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
+    this.#setKeydownHandler();
   };
 
   #setInnerHandlers = () => {
     this.element.querySelector('.film-details__emoji-list').addEventListener('change', this.#emojiListHandler);
-    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
+    this.element.querySelector('.film-details__comment-input').addEventListener('change', this.#commentInputHandler);
+  };
+
+  #setKeydownHandler = () => {
+    this._callback.click = this.#handlerKeydown;
+    this.element.querySelector('.film-details__comment-input').addEventListener('keydown', this.#ctrlEnterKeyDownHandler);
   };
 
   #emojiListHandler = (evt) => {
@@ -86,6 +97,13 @@ export default class CommentNewView extends AbstractStatefulView {
     this._setState({
       comment: evt.target.value,
     });
+  };
+
+  #ctrlEnterKeyDownHandler = (evt) => {
+    if (isCtrlEnterEvent(evt) || isCommandEnterEvent(evt)) {
+      evt.preventDefault();
+      this._callback.click(CommentNewView.parseStateToComment(this._state));
+    }
   };
 
 }

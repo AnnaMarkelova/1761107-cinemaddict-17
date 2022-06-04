@@ -3,7 +3,7 @@ import CommentsContainerView from '../view/comments-container-view.js';
 import CommentsSectionView from '../view/comments-section-view.js';
 import CommentsTitleView from '../view/comments-title-view.js';
 import CommentsPresenter from './comments-presenter.js';
-import CommentsNewPresenter from './comment-new-presenter.js';
+import CommentNewPresenter from './comment-new-presenter.js';
 import FilmDetailPresenter from './film-details-presenter.js';
 import PopupView from '../view/popup-view.js';
 
@@ -18,7 +18,7 @@ export default class PopupPresenter {
   #container = footerElement;
 
   #commentsPresenter;
-  #commentsNewPresenter;
+  #CommentNewPresenter;
   #filmDetailPresenter;
 
   constructor(updateData) {
@@ -64,13 +64,13 @@ export default class PopupPresenter {
     render(this.commentsContainerComponent, this.#popupComponent.element);
     this.commentsSectionComponent = new CommentsSectionView();
     render(this.commentsSectionComponent, this.commentsContainerComponent.element);
-    render(new CommentsTitleView(this.#commentsModel.comments), this.commentsSectionComponent.element);
+    render(new CommentsTitleView(this.#commentsModel.getCommentsOfFilm(this.#film.comments)), this.commentsSectionComponent.element);
 
-    this.#commentsPresenter = new CommentsPresenter(this.#getFilmComments(), this.commentsSectionComponent);
+    this.#commentsPresenter = new CommentsPresenter(this.#getFilmComments(), this.#film, this.commentsSectionComponent, this.#updateData);
     this.#commentsPresenter.init();
 
-    this.#commentsNewPresenter = new CommentsNewPresenter(this.commentsSectionComponent);
-    this.#commentsNewPresenter.init();
+    this.#CommentNewPresenter = new CommentNewPresenter(this.commentsSectionComponent, this.#film, this.#updateData);
+    this.#CommentNewPresenter.init();
   };
 
   #closePopup = () => {

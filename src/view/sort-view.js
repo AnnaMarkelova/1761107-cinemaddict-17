@@ -1,18 +1,43 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {SortType} from '../const.js';
+import { SortType } from '../const.js';
 
-const createSortTemplate = () =>
-  `<ul class="sort">
-  <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
-  <li><a href="#" class="sort__button" data-sort-type="${SortType.DATE}">Sort by date</a></li>
-  <li><a href="#" class="sort__button" data-sort-type="${SortType.RATING}">Sort by rating</a></li>
-  </ul>`;
+const createSortItemTemplate = (sortTypeItem, currentSortType) =>
+  `<li><a href="#" class="sort__button ${currentSortType === sortTypeItem ? 'sort__button--active' : ''}" data-sort-type="${sortTypeItem}">Sort by ${sortTypeItem}</a></li>`;
 
-export default class SortView extends AbstractView{
+const createSortTemplate = (currentSortType, sortList, isNoList) => {
+
+  if (isNoList) {
+    return '<div></div>';
+  }
+
+  const SortsTemplate = [];
+  Object.keys(sortList).forEach((sortTypeItem) => {
+    SortsTemplate.push(createSortItemTemplate(sortList[sortTypeItem], currentSortType));
+  });
+  return `<ul class="sort">${SortsTemplate.join('')}</ul>`;
+};
+export default class SortView extends AbstractView {
+
+  #currentSortType = SortType.DEFAULT;
+  #isNoList;
+
+  constructor(isNoList = false) {
+    super();
+    this.#isNoList = isNoList;
+  }
 
   get template() {
-    return createSortTemplate();
+
+    return createSortTemplate(this.#currentSortType, SortType, this.#isNoList);
+
   }
+
+  init = (currentSortType) => {
+
+    this.#currentSortType = currentSortType;
+    this.setSortTypeChangeHandler();
+
+  };
 
   setSortTypeChangeHandler = (callback) => {
     this._callback.sortTypeChange = callback;
@@ -22,11 +47,6 @@ export default class SortView extends AbstractView{
   #sortTypeChangeHandler = (evt) => {
     if (evt.target.closest('.sort__button')) {
       evt.preventDefault();
-
-      const previousLink = document.querySelector('.sort__button--active');
-      previousLink.classList.remove('sort__button--active');
-      evt.target.closest('.sort__button').classList.add('sort__button--active');
-
       this._callback.sortTypeChange(evt.target.closest('.sort__button').dataset.sortType);
     }
   };

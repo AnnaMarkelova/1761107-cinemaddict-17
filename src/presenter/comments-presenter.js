@@ -7,12 +7,16 @@ export default class CommentsPresenter {
   #comments;
   #commentsComponent;
   #container;
+  #film;
+  #updateComments;
 
   #commentPresenterMap = new Map();
 
-  constructor(comments, container) {
+  constructor(comments, film, container, updateComments) {
     this.#container = container;
     this.#comments = comments;
+    this.#updateComments = updateComments;
+    this.#film = film;
   }
 
   init = () => {
@@ -26,7 +30,7 @@ export default class CommentsPresenter {
   };
 
   #renderComment = (commentItem) => {
-    const commentPresenter = new CommentPresenter(commentItem, this.#commentsComponent);
+    const commentPresenter = new CommentPresenter(commentItem, this.#film, this.#commentsComponent, this.#updateComments);
     commentPresenter.init(commentItem);
     this.#commentPresenterMap.set(commentItem.id, commentPresenter);
   };

@@ -5,6 +5,7 @@ import {nanoid} from 'nanoid';
 
 const COMMENT_COUNT_MAX = 10;
 
+const comments = [];
 
 const generateDate = (minDayGap, maxDayGap) => {
   const daysGap = getRandomNumber(minDayGap, maxDayGap);
@@ -19,15 +20,15 @@ const createComment = () => ({
   emotion: EMOTIONS[getRandomNumber(0, EMOTIONS.length - 1)]
 });
 
-const generateComments = () => {
+export const generateComments = () => {
   const countComments = getRandomNumber(0, COMMENT_COUNT_MAX);
-  const commentsList = [];
+  const filmComments = [];
   for (let i = 0; i < countComments; i++) {
-    commentsList.push(createComment());
+    const newComment = createComment();
+    comments.push(newComment);
+    filmComments.push(newComment);
   }
-  return commentsList;
+  return filmComments;
 };
-
-const comments = generateComments();
 
 export const getComments = () => comments;
