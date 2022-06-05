@@ -19,11 +19,6 @@ export default class FilmsModel extends Observable {
   getFilmById = (filmId) => this.#films.find((item) => item.id === filmId);
 
   deleteComment = (film, idComment) => {
-
-    // const indexComment = film.comments.findIndex((commentItem) => commentItem === idComment);
-    // if (indexComment === -1) {
-    //   throw new Error('Can\'t delete unexisting comment');
-    // }
     film.comments = film.comments.filter((item) => item !== idComment);
   };
 

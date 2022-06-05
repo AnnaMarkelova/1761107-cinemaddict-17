@@ -70,10 +70,8 @@ export default class PagePresenter {
   get films() {
     const sortObject = this.#sorts.find((item) => item.sortType === this.#currentSortType);
     const filteredFilms = getFilters().get(this.#filterModel.filter)(this.#filmsModel);
-    if (sortObject) {
-      return sortObject.sortFilms(filteredFilms);
-    }
-    return filteredFilms;
+    const films = sortObject ? sortObject.sortFilms(filteredFilms) : filteredFilms;
+    return films;
   }
 
   init = () => {
@@ -168,11 +166,8 @@ export default class PagePresenter {
 
   #renderSorts = () => {
     const prevSortComponent = this.#sortComponent;
-    if (this.films.length) {
-      this.#sortComponent = new SortView;
-    } else {
-      this.#sortComponent = new SortView(true);
-    }
+
+    this.#sortComponent = new SortView(!this.films.length);
 
     if (prevSortComponent === null) {
       render(this.#sortComponent, this.#filmListContainer);
