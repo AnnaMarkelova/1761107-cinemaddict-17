@@ -64,7 +64,7 @@ export default class PagePresenter {
     this.#commentsModel = commentsModel;
     this.#filterModel = filterModel;
 
-    this.#popupPresenter = new PopupPresenter(this.#handleViewAction);
+    this.#popupPresenter = new PopupPresenter(this.#commentsModel, this.#handleViewAction);
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#commentsModel.addObserver(this.#handleModelEvent);
@@ -74,20 +74,12 @@ export default class PagePresenter {
   get films() {
     const sortObject = this.#sorts.find((item) => item.sortType === this.#currentSortType);
     const filteredFilms = getFilters().get(this.#filterModel.filter)(this.#filmsModel);
-    if (sortObject) {
-      return sortObject.sortFilms(filteredFilms);
-    }
-    return filteredFilms;
+    const films = sortObject ? sortObject.sortFilms(filteredFilms) : filteredFilms;
+    return films;
   }
 
   init = () => {
-
     this.#renderLoading();
-
-    // this.#renderProfileView();
-    // this.#renderMainNavigation();
-    // this.#renderFilmsBoard();
-    // this.#renderStatistic();
   };
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -133,11 +125,11 @@ export default class PagePresenter {
       case UpdateType.MAJOR:
         this.#renderSorts();
         this.#filmListPresenter.init(this.films, this.#filterModel.filter, true);
-        this.#popupPresenter.init(data, this.#commentsModel);
+        this.#popupPresenter.init(data);
         this.#updateFilm(this.#filmsListTopRatedPresenter, data);
         this.#updateFilm(this.#filmsListMostCommentedPresenter, data);
         break;
-      case UpdateType.INIT:
+      case UpdateType.INIT_FILM:
         remove(this.#loadingComponent);
         this.#renderProfileView();
         this.#renderMainNavigation();
@@ -182,11 +174,7 @@ export default class PagePresenter {
 
   #renderSorts = () => {
     const prevSortComponent = this.#sortComponent;
-    if (this.films.length) {
-      this.#sortComponent = new SortView;
-    } else {
-      this.#sortComponent = new SortView(true);
-    }
+    this.#sortComponent = new SortView(!this.films.length);
 
     if (prevSortComponent === null) {
       render(this.#sortComponent, this.#filmListContainer);
@@ -232,7 +220,7 @@ export default class PagePresenter {
   };
 
   #handleShowPopup = (film) => {
-    this.#popupPresenter.init(film, this.#commentsModel);
+    this.#popupPresenter.init(film);
   };
 
   #handleSortTypeChange = (sortType) => {

@@ -2,8 +2,14 @@ import ApiService from '../framework/api-service.js';
 //import { Method } from './const.js';
 
 export default class CommentsApiService extends ApiService {
+  #idFilm = '';
+
+  init (idFilm) {
+    this.#idFilm = idFilm;
+  }
+
   get comments() {
-    return this._load({url: 'comment'})
+    return this._load({url: `comments/${this.#idFilm}`})
       .then(ApiService.parseResponse);
   }
 

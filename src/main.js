@@ -16,7 +16,5 @@ const filterModel = new FilterModel();
 
 const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel);
 
-//new PagePresenter(mainElement, filmsModel, commentsModel, filterModel);
-
 pagePresenter.init();
 filmsModel.init();

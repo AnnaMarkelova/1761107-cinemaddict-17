@@ -11,7 +11,6 @@ export default class FilmsApiService extends ApiService {
     const response = await this._load({
       url: `movies/${film.id}`,
       method: Method.PUT,
-      //body: JSON.stringify(film),
       body: JSON.stringify(this.#adaptToServer(film)),
       headers: new Headers({ 'Content-Type': 'application/json' }),
     });
@@ -36,6 +35,7 @@ export default class FilmsApiService extends ApiService {
         runtime: film.film_info['runtime'],
         title: film.film_info['title'],
         'total_rating': film.film_info.totalRating,
+        writers:  film.film_info.writers,
         release: {
           date: film.film_info.release['date'],
           'release_country': film.film_info.release.releaseCountry,

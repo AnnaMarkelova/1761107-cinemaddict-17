@@ -1,20 +1,20 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createCommentsTemplate = (commentsList) =>
+const createCommentsTemplate = (commentsCount) =>
   `<h3 class="film-details__comments-title">Comments
-    <span class="film-details__comments-count">${commentsList.length}</span>
+    <span class="film-details__comments-count">${commentsCount}</span>
   </h3>`;
 
 export default class CommentsTitleView extends AbstractView {
-  #comments;
+  #commentsCount;
 
-  constructor(comments) {
+  constructor(commentsCount) {
     super();
-    this.#comments = comments;
+    this.#commentsCount = commentsCount;
   }
 
   get template() {
-    return createCommentsTemplate(this.#comments);
+    return createCommentsTemplate(this.#commentsCount);
   }
 
 }

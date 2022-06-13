@@ -23,7 +23,8 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
-  INIT: 'INIT',
+  INIT_FILM: 'INIT_FILM',
+  INIT_COMMENT: 'INIT_COMMENT',
 };
 
 export const Method = {

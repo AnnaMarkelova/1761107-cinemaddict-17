@@ -27,7 +27,7 @@ export default class FilmsModel extends Observable {
       this.#films = [];
     }
 
-    this._notify(UpdateType.INIT);
+    this._notify(UpdateType.INIT_FILM);
   };
 
   get films() {
@@ -49,6 +49,7 @@ export default class FilmsModel extends Observable {
         runtime: film.film_info['runtime'],
         title: film.film_info['title'],
         totalRating: film.film_info['total_rating'],
+        writers:  film.film_info['writers'],
         release: {
           date: film.film_info.release['date'],
           releaseCountry: film.film_info.release['release_country'],
@@ -79,11 +80,6 @@ export default class FilmsModel extends Observable {
   getFilmById = (filmId) => this.#films.find((item) => item.id === filmId);
 
   deleteComment = (film, idComment) => {
-
-    // const indexComment = film.comments.findIndex((commentItem) => commentItem === idComment);
-    // if (indexComment === -1) {
-    //   throw new Error('Can\'t delete unexisting comment');
-    // }
     film.comments = film.comments.filter((item) => item !== idComment);
   };
 

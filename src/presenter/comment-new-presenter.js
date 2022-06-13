@@ -19,7 +19,6 @@ export default class CommentNewPresenter {
 
     this.#commentNewComponent = new CommentNewView(this.#handlerKeydown);
     this.#renderCommentNew();
-    //this.#setupCommentHandlers();
   };
 
   #renderCommentNew = () => {
@@ -27,10 +26,6 @@ export default class CommentNewPresenter {
   };
 
   getFilmDetailComponent = () => this.#commentNewComponent;
-
-  // #setupCommentHandlers = () => {
-  //   this.#commentNewComponent.setClickHandler(this.#handlerClick);
-  // };
 
   #handlerKeydown = (newComment) => {
     this.#updateComments(
