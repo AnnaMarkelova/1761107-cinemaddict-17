@@ -14,9 +14,9 @@ const filmsModel = new FilmsModel(new FilmsApiService(END_POINT, AUTHORIZATION))
 const commentsModel = new CommentsModel(new CommentsApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 
-//const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel);
+const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel);
 
-new PagePresenter(mainElement, filmsModel, commentsModel, filterModel);
+//new PagePresenter(mainElement, filmsModel, commentsModel, filterModel);
 
-//pagePresenter.init();
+pagePresenter.init();
 filmsModel.init();

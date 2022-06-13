@@ -8,6 +8,7 @@ import MainNavigationPresenter from './main-navigation-presenter.js';
 import PopupPresenter from './popup-presenter.js';
 
 import FilmsView from '../view/films-view.js';
+import LoadingView from '../view/loading-view.js';
 import SortView from '../view/sort-view.js';
 import StatisticsView from '../view/statistics-view.js';
 import ProfileView from '../view/profile-view.js';
@@ -30,6 +31,9 @@ export default class PagePresenter {
 
   #filmsComponent = new FilmsView;
   #sortComponent = null;
+  #loadingComponent = new LoadingView();
+  #profileComponent = null;
+  #statisticComponent = null;
 
   #currentSortType = SortType.DEFAULT;
 
@@ -77,6 +81,9 @@ export default class PagePresenter {
   }
 
   init = () => {
+
+    this.#renderLoading();
+
     // this.#renderProfileView();
     // this.#renderMainNavigation();
     // this.#renderFilmsBoard();
@@ -131,6 +138,7 @@ export default class PagePresenter {
         this.#updateFilm(this.#filmsListMostCommentedPresenter, data);
         break;
       case UpdateType.INIT:
+        remove(this.#loadingComponent);
         this.#renderProfileView();
         this.#renderMainNavigation();
         this.#renderFilmsBoard();
@@ -210,11 +218,17 @@ export default class PagePresenter {
   };
 
   #renderProfileView = () => {
-    render(new ProfileView(), headerElement);
+    this.#profileComponent = new ProfileView();
+    render(this.#profileComponent, headerElement);
   };
 
   #renderStatistic = () => {
-    render(new StatisticsView(this.#filmsModel.films.length), footerElement);
+    this.#statisticComponent = new StatisticsView(this.#filmsModel.films.length);
+    render(this.#statisticComponent, footerElement);
+  };
+
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#filmListContainer);
   };
 
   #handleShowPopup = (film) => {
