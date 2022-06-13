@@ -77,10 +77,10 @@ export default class PagePresenter {
   }
 
   init = () => {
-    this.#renderProfileView();
-    this.#renderMainNavigation();
-    this.#renderFilmsBoard();
-    this.#renderStatistic();
+    // this.#renderProfileView();
+    // this.#renderMainNavigation();
+    // this.#renderFilmsBoard();
+    // this.#renderStatistic();
   };
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -129,6 +129,12 @@ export default class PagePresenter {
         this.#popupPresenter.init(data, this.#commentsModel);
         this.#updateFilm(this.#filmsListTopRatedPresenter, data);
         this.#updateFilm(this.#filmsListMostCommentedPresenter, data);
+        break;
+      case UpdateType.INIT:
+        this.#renderProfileView();
+        this.#renderMainNavigation();
+        this.#renderFilmsBoard();
+        this.#renderStatistic();
         break;
     }
   };

@@ -4,6 +4,20 @@ import { getComments } from '../mock/comments';
 export default class CommentsModel extends Observable {
 
   #comments = getComments();
+  #commentsApiService = null;
+
+  constructor(commentsApiService) {
+    super();
+    this.#commentsApiService = commentsApiService;
+
+    this.#commentsApiService.comments.then((comments) => {
+      console.log(comments);
+      // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
+      // а ещё на сервере используется snake_case, а у нас camelCase.
+      // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
+      // Есть вариант получше - паттерн "Адаптер"
+    });
+  }
 
   get comments() {
     return this.#comments;

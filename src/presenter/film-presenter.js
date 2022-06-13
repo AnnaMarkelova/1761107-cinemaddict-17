@@ -58,7 +58,7 @@ export default class FilmPresenter {
   };
 
   #handleWatchlistClick = () => {
-    this.#changeUserDetail('watchList');
+    this.#changeUserDetail('watchlist');
   };
 
   #handleAlreadyWatchedClick = () => {

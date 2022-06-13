@@ -54,7 +54,7 @@ const generateFilm = () => {
       description: DESCRIPTION[getRandomNumber(0, DESCRIPTION.length - 1)],
     },
     userDetails: {
-      watchList: Boolean(getRandomNumber(0, 2)),
+      watchlist: Boolean(getRandomNumber(0, 2)),
       alreadyWatched: Boolean(getRandomNumber(0, 2)),
       watchingDate: generateDate(-100, 0),
       favorite: Boolean(getRandomNumber(0, 2))
