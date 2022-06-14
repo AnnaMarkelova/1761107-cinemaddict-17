@@ -91,9 +91,11 @@ export default class PagePresenter {
         this.#filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
+        update.setViewAction();
         this.#commentsModel.deleteComment(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
+        update.setViewAction();
         this.#commentsModel.addComment(updateType, update);
         break;
     }

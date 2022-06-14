@@ -38,8 +38,17 @@ export default class CommentPresenter {
       {
         film: this.#film,
         comment: this.#comment,
-        isDelete: true
+        isDelete: true,
+        setViewAction: this.#setDeleting,
       },
     );
+  };
+
+  #setDeleting = () => {
+    this.#commentComponent.updateElement({
+      isDisabled: true,
+      isDeleting: true,
+    });
+    this.#commentComponent.setClickHandler(this.#handlerClick);
   };
 }

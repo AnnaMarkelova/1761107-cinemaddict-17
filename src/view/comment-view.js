@@ -1,8 +1,8 @@
 import he from 'he';
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeDateComment } from '../util/util.js';
 
-const createCommentTemplate = (commentItem) => {
+const createCommentTemplate = (commentItem, state) => {
 
   const {
     author,
@@ -10,6 +10,8 @@ const createCommentTemplate = (commentItem) => {
     date,
     emotion,
   } = commentItem;
+  const isDisabled = state.isDisabled ? 'disabled' : '';
+  const isDeleting = state.isDeleting ? 'deleting...' : 'Delete';
 
   return `<li class="film-details__comment">
   <span class="film-details__comment-emoji">
@@ -20,23 +22,32 @@ const createCommentTemplate = (commentItem) => {
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author}</span>
       <span class="film-details__comment-day">${humanizeDateComment(date)}</span>
-      <button class="film-details__comment-delete">Delete</button>
+      <button class="film-details__comment-delete" ${isDisabled}>${isDeleting}</button>
     </p>
   </div>
   </li>`;
 
 };
 
-export default class CommentView extends AbstractView {
+export default class CommentView extends AbstractStatefulView {
   #comment;
+  _state;
 
   constructor(comment) {
     super();
     this.#comment = comment;
+    this._state = {
+      isDisabled: false,
+      isDeleting: false,
+    };
   }
 
+  _restoreHandlers = () => {
+    //
+  };
+
   get template() {
-    return createCommentTemplate(this.#comment);
+    return createCommentTemplate(this.#comment, this._state);
   }
 
   setClickHandler = (callback) => {
@@ -48,4 +59,5 @@ export default class CommentView extends AbstractView {
     evt.preventDefault();
     this._callback.click();
   };
+
 }

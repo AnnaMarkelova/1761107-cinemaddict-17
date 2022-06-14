@@ -25,8 +25,6 @@ export default class CommentNewPresenter {
     render(this.#commentNewComponent, this.#container.element);
   };
 
-  getFilmDetailComponent = () => this.#commentNewComponent;
-
   #handlerKeydown = (newComment) => {
     this.#updateComments(
       UserAction.ADD_COMMENT,
@@ -34,9 +32,16 @@ export default class CommentNewPresenter {
       {
         film: this.#film,
         comment: newComment,
-        isDelete: false
+        isDelete: false,
+        setViewAction: this.#setSaving,
       },
     );
+  };
+
+  #setSaving = () => {
+    this.#commentNewComponent.updateElement({
+      isDisabled: true,
+    });
   };
 }
 
