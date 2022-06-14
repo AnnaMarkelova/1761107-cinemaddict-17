@@ -15,7 +15,7 @@ import ProfileView from '../view/profile-view.js';
 
 const mainElement = document.querySelector('.main');
 const headerElement = document.querySelector('.header');
-const footerElement = document.querySelector('.footer');
+const footerStatisticElement = document.querySelector('.footer__statistics');
 
 export default class PagePresenter {
 
@@ -79,7 +79,10 @@ export default class PagePresenter {
   }
 
   init = () => {
+    this.#renderProfileView();
+    this.#renderMainNavigation();
     this.#renderLoading();
+    this.#renderStatistic();
   };
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -132,7 +135,7 @@ export default class PagePresenter {
       case UpdateType.INIT_FILM:
         remove(this.#loadingComponent);
         this.#renderProfileView();
-        this.#renderMainNavigation();
+        // this.#renderMainNavigation();
         this.#renderFilmsBoard();
         this.#renderStatistic();
         break;
@@ -206,13 +209,43 @@ export default class PagePresenter {
   };
 
   #renderProfileView = () => {
+    // this.#profileComponent = new ProfileView();
+    // render(this.#profileComponent, headerElement);
+
+    const prevProfileComponent= this.#profileComponent;
     this.#profileComponent = new ProfileView();
-    render(this.#profileComponent, headerElement);
+
+    if (prevProfileComponent === null) {
+      render(this.#profileComponent, headerElement);
+      return;
+    }
+
+    if (headerElement.contains(prevProfileComponent.element)) {
+      replace(this.#profileComponent, prevProfileComponent);
+
+    }
+    remove(prevProfileComponent);
+
   };
 
   #renderStatistic = () => {
+    // this.#statisticComponent = new StatisticsView(this.#filmsModel.films.length);
+    // render(this.#statisticComponent, footerElement);
+
+    const prevStatisticComponent= this.#statisticComponent;
     this.#statisticComponent = new StatisticsView(this.#filmsModel.films.length);
-    render(this.#statisticComponent, footerElement);
+
+    if (prevStatisticComponent === null) {
+      render(this.#statisticComponent, footerStatisticElement);
+      return;
+    }
+
+    if (footerStatisticElement.contains(prevStatisticComponent.element)) {
+      replace(this.#statisticComponent, prevStatisticComponent);
+
+    }
+    remove(prevStatisticComponent);
+
   };
 
   #renderLoading = () => {
