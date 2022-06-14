@@ -83,8 +83,8 @@ export default class FilmsModel extends Observable {
     film.comments = film.comments.filter((item) => item !== idComment);
   };
 
-  addComment = (film, idComment) => {
-    film.comments.push(idComment);
+  addComment = (film) => {
+    this.#films.filter((item) => item.id === film.id).comments = film.comments;
   };
 
   getWatchList = () => this.#films.filter((film) => film.userDetails.watchlist);

@@ -36,6 +36,7 @@ export default class PagePresenter {
   #statisticComponent = null;
 
   #currentSortType = SortType.DEFAULT;
+  currentFilmPopup = null;
 
   #filmListContainer;
 
@@ -64,7 +65,7 @@ export default class PagePresenter {
     this.#commentsModel = commentsModel;
     this.#filterModel = filterModel;
 
-    this.#popupPresenter = new PopupPresenter(this.#commentsModel, this.#handleViewAction);
+    this.#popupPresenter = new PopupPresenter(this.#commentsModel, this.#handleViewAction, this.#setCurrentFilmPopup);
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#commentsModel.addObserver(this.#handleModelEvent);
@@ -94,7 +95,7 @@ export default class PagePresenter {
         update.setViewAction();
         try {
           await this.#commentsModel.deleteComment(updateType, update);
-        } catch(err) {
+        } catch (err) {
           update.setAborting();
         }
         break;
@@ -102,7 +103,7 @@ export default class PagePresenter {
         update.setViewAction();
         try {
           await this.#commentsModel.addComment(updateType, update);
-        } catch(err) {
+        } catch (err) {
           update.setAborting();
         }
         break;
@@ -120,9 +121,10 @@ export default class PagePresenter {
           if (data.isDelete) {
             //удаляет комментарий в фильме
             this.#filmsModel.deleteComment(data.film, data.comment.id);
-          } else {
+          }
+          else {
             //добавляет комментарий в фильме
-            this.#filmsModel.addComment(data.film, data.comment.id);
+            this.#filmsModel.addComment(data.film);
           }
           //обновляет карточку фильма
           this.#filmListPresentersMap.forEach((presenter) => {
@@ -133,15 +135,16 @@ export default class PagePresenter {
           });
           //перерисовывает most commented
           this.#filmsListMostCommentedPresenter.init(this.#filmsModel.getMostCommented());
+          this.#updatePopup(data.film);
         }
         break;
       case UpdateType.MAJOR:
         this.#renderProfileView();
         this.#renderSorts();
         this.#filmListPresenter.init(this.films, this.#filterModel.filter, true);
-        this.#popupPresenter.init(data);
         this.#updateFilm(this.#filmsListTopRatedPresenter, data);
         this.#updateFilm(this.#filmsListMostCommentedPresenter, data);
+        this.#updatePopup(data);
         break;
       case UpdateType.INIT_FILM:
         remove(this.#loadingComponent);
@@ -156,6 +159,14 @@ export default class PagePresenter {
     const filmPresenterMap = filmListPresenter.getFilmPresenterMap();
     if (filmPresenterMap.has(updatedFilm.id)) {
       filmPresenterMap.get(updatedFilm.id).init(updatedFilm, this.#commentsModel);
+    }
+  };
+
+  #updatePopup = (film) => {
+    if (this.currentFilmPopup !== null) {
+      if (this.currentFilmPopup.id === film.id) {
+        this.#popupPresenter.init(film);
+      }
     }
   };
 
@@ -209,6 +220,7 @@ export default class PagePresenter {
       this.#filmsComponent,
       this.#handleViewAction,
       this.#handleShowPopup,
+      this.#setCurrentFilmPopup,
       title,
       hideTitle,
       isExtra
@@ -220,7 +232,7 @@ export default class PagePresenter {
 
   #renderProfileView = () => {
 
-    const prevProfileComponent= this.#profileComponent;
+    const prevProfileComponent = this.#profileComponent;
     this.#profileComponent = new ProfileView(this.#filmsModel.getAlreadyWatchedList().length);
 
     if (prevProfileComponent === null) {
@@ -238,7 +250,7 @@ export default class PagePresenter {
 
   #renderStatistic = () => {
 
-    const prevStatisticComponent= this.#statisticComponent;
+    const prevStatisticComponent = this.#statisticComponent;
     this.#statisticComponent = new StatisticsView(this.#filmsModel.films.length);
 
     if (prevStatisticComponent === null) {
@@ -259,6 +271,7 @@ export default class PagePresenter {
   };
 
   #handleShowPopup = (film) => {
+    this.#setCurrentFilmPopup(film);
     this.#popupPresenter.init(film);
   };
 
@@ -271,5 +284,9 @@ export default class PagePresenter {
 
     this.#updateMainFilmsList();
   };
+
+  #setCurrentFilmPopup(film) {
+    this.currentFilmPopup = film;
+  }
 
 }

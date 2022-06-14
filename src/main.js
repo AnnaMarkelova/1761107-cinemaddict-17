@@ -7,7 +7,7 @@ import CommentsApiService from './api-services/comments-api-service.js';
 
 const mainElement = document.querySelector('.main');
 
-const AUTHORIZATION = 'Basic er8878gzbdw';
+const AUTHORIZATION = 'Basic er887804bdw';
 const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
 
 const filmsModel = new FilmsModel(new FilmsApiService(END_POINT, AUTHORIZATION));

@@ -15,6 +15,8 @@ const bodyElement = document.querySelector('body');
 export default class PopupPresenter {
 
   #updateData = null;
+  #setCurrentFilmPopup = null;
+
   #commentsModel = null;
   #film = null;
   #popupComponent = null;
@@ -24,8 +26,10 @@ export default class PopupPresenter {
   #CommentNewPresenter;
   #filmDetailPresenter;
 
-  constructor(commentsModel, updateData) {
+  constructor(commentsModel, updateData, setCurrentFilmPopup) {
     this.#updateData = updateData;
+    this.#setCurrentFilmPopup = setCurrentFilmPopup;
+
     this.#commentsModel = commentsModel;
     this.#commentsModel.addObserver(this.#handleModelEvent);
   }
@@ -90,6 +94,7 @@ export default class PopupPresenter {
   #closePopup = () => {
     remove(this.#popupComponent);
     this.#popupComponent = null;
+    this.#setCurrentFilmPopup(null);
   };
 
 }
