@@ -35,13 +35,17 @@ export default class CommentsModel extends Observable {
 
       this._notify(updateType, update);
     } catch (err) {
-      throw new Error('Can\'t delete film');
+      throw new Error('Can\'t delete comment');
     }
   };
 
-  addComment = (updateType, update) => {
-    this.#comments.push(update.comment);
-
-    this._notify(updateType, update);
+  addComment = async (updateType, update) => {
+    try {
+      const response = await this.#commentsApiService.addComment(update.film.id, update.comment);
+      this.#comments = response.comments;
+      this._notify(updateType, update);
+    } catch (err) {
+      throw new Error('Can\'t add comment');
+    }
   };
 }

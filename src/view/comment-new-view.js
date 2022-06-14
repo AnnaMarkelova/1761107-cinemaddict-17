@@ -1,7 +1,5 @@
 import { EMOTIONS } from '../const.js';
 import { isCtrlEnterEvent, isCommandEnterEvent } from '../util/util.js';
-import dayjs from 'dayjs';
-import { nanoid } from 'nanoid';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 const BLANK_COMMENT = {
@@ -60,9 +58,7 @@ export default class CommentNewView extends AbstractStatefulView {
 
   static parseStateToComment = (state) => {
     const comment = { ...state };
-    comment.id = nanoid();
     comment.author = 'Ilya OReilly';
-    comment.date = dayjs().toISOString();
     return comment;
   };
 
