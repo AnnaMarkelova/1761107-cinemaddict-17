@@ -93,9 +93,9 @@ export default class FilmsModel extends Observable {
 
   getFavoriteList = () => this.#films.filter((film) => film.userDetails.favorite);
 
-  getMostCommented = () => this.#films.slice().sort((filmA, filmB) => filmB.comments.length - filmA.comments.length).slice(0, EXTRA_FILMS_COUNT);
+  getMostCommented = () => this.#films.filter((film) => film.comments.length > 0).sort((filmA, filmB) => filmB.comments.length - filmA.comments.length).slice(0, EXTRA_FILMS_COUNT);
 
   getMostRated = () => this.getSortRated().slice(0, EXTRA_FILMS_COUNT);
 
-  getSortRated = () => this.#films.slice().sort((filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating);
+  getSortRated = () => this.#films.filter((film) => film.filmInfo.totalRating > 0).sort((filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating);
 }

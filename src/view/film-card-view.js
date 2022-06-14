@@ -24,6 +24,11 @@ const createFilmCardTemplate = (film) => {
   const alreadyWatchedActive = alreadyWatched ? 'film-card__controls-item--active' : '';
   const favoriteActive = favorite ? 'film-card__controls-item--active' : '';
 
+  let newdescription  = description;
+  if (description.length >= 140) {
+    newdescription = `${description.slice(1, 140)}...`;
+  }
+
   return `<article class="film-card">
   <a class="film-card__link">
     <h3 class="film-card__title">${title}</h3>
@@ -31,10 +36,10 @@ const createFilmCardTemplate = (film) => {
     <p class="film-card__info">
       <span class="film-card__year">${getYearFromDate(date)}</span>
       <span class="film-card__duration">${transformIntToHour(runtime)}</span>
-      <span class="film-card__genre">${genre}</span>
+      <span class="film-card__genre">${genre.join(', ')}</span>
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
-    <p class="film-card__description">${description}</p>
+    <p class="film-card__description">${newdescription}</p>
     <span class="film-card__comments">${comments.length} comments</span>
   </a>
   <div class="film-card__controls">

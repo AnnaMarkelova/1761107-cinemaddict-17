@@ -4,7 +4,7 @@ import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 import { humanizeDateRelease } from '../util/util.js';
 
-const createGenresTemplate = (genres) => genres.map((item) => `<span class="film-details__genre">${item}</span>`);
+const createGenresTemplate = (genres) => genres.map((item) => `<span class="film-details__genre">${item}</span>`).join('');
 
 const createFilmDetailsTemplate = (film) => {
   const {
@@ -41,7 +41,12 @@ const createFilmDetailsTemplate = (film) => {
   const favoriteActive = favorite
     ? 'film-details__control-button--active'
     : '';
+
   const genresTemplate = createGenresTemplate(genre);
+  let genreTitle = 'Genre';
+  if (genre.length > 1) {
+    genreTitle = 'Genres';
+  }
 
   return `<div class="film-details__top-container">
     <div class="film-details__close">
@@ -92,7 +97,7 @@ const createFilmDetailsTemplate = (film) => {
             <td class="film-details__cell">${releaseCountry}</td>
           </tr>
           <tr class="film-details__row">
-            <td class="film-details__term">Genres</td>
+            <td class="film-details__term">${genreTitle}</td>
             <td class="film-details__cell">
             ${genresTemplate}
             </td>

@@ -136,6 +136,7 @@ export default class PagePresenter {
         }
         break;
       case UpdateType.MAJOR:
+        this.#renderProfileView();
         this.#renderSorts();
         this.#filmListPresenter.init(this.films, this.#filterModel.filter, true);
         this.#popupPresenter.init(data);
@@ -220,7 +221,7 @@ export default class PagePresenter {
   #renderProfileView = () => {
 
     const prevProfileComponent= this.#profileComponent;
-    this.#profileComponent = new ProfileView();
+    this.#profileComponent = new ProfileView(this.#filmsModel.getAlreadyWatchedList().length);
 
     if (prevProfileComponent === null) {
       render(this.#profileComponent, headerElement);

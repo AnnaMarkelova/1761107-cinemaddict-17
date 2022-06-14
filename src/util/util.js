@@ -1,12 +1,5 @@
 import dayjs from 'dayjs';
 
-export const getRandomNumber = (min, max) => {
-  if (min <= max) {
-    return Math.floor(Math.random() * (max - min) + min);
-  }
-  return 'Введите число в установленном диапазоне';
-};
-
 export const getYearFromDate = (date) => dayjs(date).year();
 
 export const transformIntToHour = (int) => {
