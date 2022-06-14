@@ -16,7 +16,7 @@ export default class CommentsModel extends Observable {
     try {
       this.#commentsApiService.init(idFilm);
       this.#comments = await this.#commentsApiService.comments;
-    } catch(err) {
+    } catch (err) {
       this.#comments = [];
     }
 
@@ -27,10 +27,16 @@ export default class CommentsModel extends Observable {
     return this.#comments;
   }
 
-  deleteComment = (updateType, update) => {
-    this.#comments = this.#comments.filter((item) => item.id !== update.comment.id);
+  deleteComment = async (updateType, update) => {
+    try {
+      await this.#commentsApiService.deleteComment(update.comment.id);
 
-    this._notify(updateType, update);
+      this.#comments = this.#comments.filter((item) => item.id !== update.comment.id);
+
+      this._notify(updateType, update);
+    } catch (err) {
+      throw new Error('Can\'t delete film');
+    }
   };
 
   addComment = (updateType, update) => {
