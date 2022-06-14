@@ -40,6 +40,7 @@ export default class CommentPresenter {
         comment: this.#comment,
         isDelete: true,
         setViewAction: this.#setDeleting,
+        setAborting: this.#setAborting,
       },
     );
   };
@@ -49,6 +50,17 @@ export default class CommentPresenter {
       isDisabled: true,
       isDeleting: true,
     });
-    this.#commentComponent.setClickHandler(this.#handlerClick);
+  };
+
+  #setAborting = () => {
+    const resetFormState = () => {
+      this.#commentComponent.updateElement({
+        isDisabled: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#commentComponent.shake(resetFormState);
+    this.#setupCommentHandlers();
   };
 }

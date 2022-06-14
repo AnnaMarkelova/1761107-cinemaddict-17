@@ -34,6 +34,8 @@ export default class CommentNewPresenter {
         comment: newComment,
         isDelete: false,
         setViewAction: this.#setSaving,
+        setAborting: this.#setAborting,
+        state: this.#commentNewComponent.state,
       },
     );
   };
@@ -42,6 +44,16 @@ export default class CommentNewPresenter {
     this.#commentNewComponent.updateElement({
       isDisabled: true,
     });
+  };
+
+  #setAborting = () => {
+    const resetFormState = () => {
+      this.#commentNewComponent.updateElement({
+        isDisabled: false,
+      });
+    };
+
+    this.#commentNewComponent.shake(resetFormState);
   };
 }
 

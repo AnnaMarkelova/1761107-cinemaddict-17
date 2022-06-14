@@ -85,18 +85,26 @@ export default class PagePresenter {
     this.#renderStatistic();
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_FILMS:
         this.#filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
         update.setViewAction();
-        this.#commentsModel.deleteComment(updateType, update);
+        try {
+          await this.#commentsModel.deleteComment(updateType, update);
+        } catch(err) {
+          update.setAborting();
+        }
         break;
       case UserAction.ADD_COMMENT:
         update.setViewAction();
-        this.#commentsModel.addComment(updateType, update);
+        try {
+          await this.#commentsModel.addComment(updateType, update);
+        } catch(err) {
+          update.setAborting();
+        }
         break;
     }
   };
@@ -137,7 +145,6 @@ export default class PagePresenter {
       case UpdateType.INIT_FILM:
         remove(this.#loadingComponent);
         this.#renderProfileView();
-        // this.#renderMainNavigation();
         this.#renderFilmsBoard();
         this.#renderStatistic();
         break;
@@ -211,8 +218,6 @@ export default class PagePresenter {
   };
 
   #renderProfileView = () => {
-    // this.#profileComponent = new ProfileView();
-    // render(this.#profileComponent, headerElement);
 
     const prevProfileComponent= this.#profileComponent;
     this.#profileComponent = new ProfileView();
@@ -231,8 +236,6 @@ export default class PagePresenter {
   };
 
   #renderStatistic = () => {
-    // this.#statisticComponent = new StatisticsView(this.#filmsModel.films.length);
-    // render(this.#statisticComponent, footerElement);
 
     const prevStatisticComponent= this.#statisticComponent;
     this.#statisticComponent = new StatisticsView(this.#filmsModel.films.length);

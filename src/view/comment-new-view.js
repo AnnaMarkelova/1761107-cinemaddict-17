@@ -3,10 +3,7 @@ import { isCtrlEnterEvent, isCommandEnterEvent } from '../util/util.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 const BLANK_COMMENT = {
-  id: '',
-  author: '',
   comment: '',
-  date: null,
   emotion: '',
 };
 
