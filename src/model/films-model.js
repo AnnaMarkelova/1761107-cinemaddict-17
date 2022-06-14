@@ -64,10 +64,17 @@ export default class FilmsModel extends Observable {
   };
 
 
-  updateFilm = (updateType, update) => {
-    this.#films = this.#films.map((item) => item.id === update.id ? update : item);
+  updateFilm = async (updateType, update) => {
+    try {
+      const response = await this.#filmsApiService.updateFilm(update);
+      const updatedFilm = this.#adaptToClient(response);
 
-    this._notify(updateType, update);
+      this.#films = this.#films.map((item) => item.id === updatedFilm.id ? updatedFilm : item);
+
+      this._notify(updateType, update);
+    } catch(err) {
+      throw new Error('Can\'t update film');
+    }
   };
 
   getFilmById = (filmId) => this.#films.find((item) => item.id === filmId);
