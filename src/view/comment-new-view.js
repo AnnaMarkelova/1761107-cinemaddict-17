@@ -38,9 +38,9 @@ export default class CommentNewView extends AbstractStatefulView {
   #handlerKeydown;
   _state;
 
-  constructor(handlerKeydown) {
+  constructor(handlerKeydown, prevState = BLANK_COMMENT) {
     super();
-    this.#comment = BLANK_COMMENT;
+    this.#comment = prevState;
     this.#handlerKeydown = handlerKeydown;
     this._state = CommentNewView.parseCommentToState(this.#comment);
     this.#setInnerHandlers();
@@ -49,6 +49,10 @@ export default class CommentNewView extends AbstractStatefulView {
 
   get template() {
     return createPopupTemplate(this._state);
+  }
+
+  get state() {
+    return this._state;
   }
 
   static parseCommentToState = (comment) => (

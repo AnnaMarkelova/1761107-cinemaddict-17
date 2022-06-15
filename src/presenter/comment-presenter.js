@@ -18,7 +18,7 @@ export default class CommentPresenter {
   }
 
   init = () => {
-    this.#commentComponent = new CommentView(this.#comment);
+    this.#commentComponent = new CommentView(this.#comment, this.#setupCommentHandlers);
     this.#renderComment();
     this.#setupCommentHandlers();
   };
@@ -61,6 +61,5 @@ export default class CommentPresenter {
     };
 
     this.#commentComponent.shake(resetFormState);
-    this.#setupCommentHandlers();
   };
 }

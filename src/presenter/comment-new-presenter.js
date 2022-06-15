@@ -1,24 +1,32 @@
-import { render } from '../framework/render.js';
+import { render, remove } from '../framework/render.js';
 import { UserAction, UpdateType } from '../const.js';
 import CommentNewView from '../view/comment-new-view.js';
 
 export default class CommentNewPresenter {
 
   #container;
-  #commentNewComponent;
+  #commentNewComponent = null;
   #film;
   #updateComments;
 
-  constructor(container, film, updateComments) {
-    this.#container = container;
+  constructor(updateComments) {
     this.#updateComments = updateComments;
-    this.#film = film;
   }
 
-  init = () => {
+  init = (container, film, restoreComment) => {
 
-    this.#commentNewComponent = new CommentNewView(this.#handlerKeydown);
+    this.#container = container;
+    this.#film = film;
+
+    const prevCommentNewComponent = this.#commentNewComponent;
+    if (restoreComment && prevCommentNewComponent !== null) {
+      this.#commentNewComponent = new CommentNewView(this.#handlerKeydown, prevCommentNewComponent.state);
+    } else {
+      this.#commentNewComponent = new CommentNewView(this.#handlerKeydown);
+    }
     this.#renderCommentNew();
+    remove(prevCommentNewComponent);
+
   };
 
   #renderCommentNew = () => {
@@ -35,7 +43,6 @@ export default class CommentNewPresenter {
         isDelete: false,
         setViewAction: this.#setSaving,
         setAborting: this.#setAborting,
-        state: this.#commentNewComponent.state,
       },
     );
   };

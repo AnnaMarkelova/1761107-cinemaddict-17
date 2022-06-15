@@ -18,12 +18,16 @@ export default class PopupPresenter {
   #setCurrentFilmPopup = null;
 
   #commentsModel = null;
+
   #film = null;
+  #restoreComment;
+
   #popupComponent = null;
+
   #container = footerElement;
 
   #commentsPresenter;
-  #CommentNewPresenter;
+  #CommentNewPresenter = null;
   #filmDetailPresenter;
 
   constructor(commentsModel, updateData, setCurrentFilmPopup) {
@@ -34,8 +38,9 @@ export default class PopupPresenter {
     this.#commentsModel.addObserver(this.#handleModelEvent);
   }
 
-  init = (film) => {
+  init = (film, restoreComment) => {
     this.#film = film;
+    this.#restoreComment = restoreComment;
     this.#commentsModel.init(this.#film.id);
   };
 
@@ -87,8 +92,10 @@ export default class PopupPresenter {
     this.#commentsPresenter = new CommentsPresenter(this.#commentsModel.comments, this.#film, this.commentsSectionComponent, this.#updateData);
     this.#commentsPresenter.init();
 
-    this.#CommentNewPresenter = new CommentNewPresenter(this.commentsSectionComponent, this.#film, this.#updateData);
-    this.#CommentNewPresenter.init();
+    if (this.#CommentNewPresenter === null) {
+      this.#CommentNewPresenter = new CommentNewPresenter(this.#updateData);
+    }
+    this.#CommentNewPresenter.init(this.commentsSectionComponent, this.#film, this.#restoreComment );
   };
 
   #closePopup = () => {

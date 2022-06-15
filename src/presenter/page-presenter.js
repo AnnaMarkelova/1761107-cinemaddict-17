@@ -118,9 +118,11 @@ export default class PagePresenter {
         break;
       case UpdateType.MINOR:
         {
+          let restoreComment = false;
           if (data.isDelete) {
             //удаляет комментарий в фильме
             this.#filmsModel.deleteComment(data.film, data.comment.id);
+            restoreComment = true;
           }
           else {
             //добавляет комментарий в фильме
@@ -135,7 +137,7 @@ export default class PagePresenter {
           });
           //перерисовывает most commented
           this.#filmsListMostCommentedPresenter.init(this.#filmsModel.getMostCommented());
-          this.#updatePopup(data.film);
+          this.#updatePopup(data.film, restoreComment);
         }
         break;
       case UpdateType.MAJOR:
@@ -144,7 +146,7 @@ export default class PagePresenter {
         this.#filmListPresenter.init(this.films, this.#filterModel.filter, true);
         this.#updateFilm(this.#filmsListTopRatedPresenter, data);
         this.#updateFilm(this.#filmsListMostCommentedPresenter, data);
-        this.#updatePopup(data);
+        this.#updatePopup(data, true);
         break;
       case UpdateType.INIT_FILM:
         remove(this.#loadingComponent);
@@ -162,10 +164,10 @@ export default class PagePresenter {
     }
   };
 
-  #updatePopup = (film) => {
+  #updatePopup = (film, restoreComment) => {
     if (this.currentFilmPopup !== null) {
       if (this.currentFilmPopup.id === film.id) {
-        this.#popupPresenter.init(film);
+        this.#popupPresenter.init(film, restoreComment);
       }
     }
   };

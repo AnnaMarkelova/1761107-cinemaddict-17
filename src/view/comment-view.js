@@ -32,10 +32,12 @@ const createCommentTemplate = (commentItem, state) => {
 export default class CommentView extends AbstractStatefulView {
   #comment;
   _state;
+  #callback;
 
-  constructor(comment) {
+  constructor(comment, callback) {
     super();
     this.#comment = comment;
+    this.#callback = callback;
     this._state = {
       isDisabled: false,
       isDeleting: false,
@@ -43,7 +45,7 @@ export default class CommentView extends AbstractStatefulView {
   }
 
   _restoreHandlers = () => {
-    //
+    this.setClickHandler(this.#callback);
   };
 
   get template() {
