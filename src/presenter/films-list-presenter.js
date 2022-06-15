@@ -80,8 +80,11 @@ export default class FilmListPresenter {
 
   #renderFilmList = (resetDisplayedFilmsCount) => {
 
-    let filmsCount = resetDisplayedFilmsCount ? this.#displayedFilmsCount : FILMS_COUNT_PER_STEP;
+    let filmsCount = FILMS_COUNT_PER_STEP;
+
     if (this.#displayedFilmsCount && resetDisplayedFilmsCount) {
+      const stepsCount = Math.ceil(this.#displayedFilmsCount / FILMS_COUNT_PER_STEP);
+      this.#displayedFilmsCount = Math.min(this.#films.length, stepsCount * FILMS_COUNT_PER_STEP);
       filmsCount = this.#displayedFilmsCount;
     } else {
       this.#displayedFilmsCount = 0;
