@@ -1,4 +1,5 @@
 import { render, remove, replace } from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 import { getFilters } from '../util/filter.js';
 import { sortDateDown } from '../util/util.js';
@@ -13,6 +14,10 @@ import SortView from '../view/sort-view.js';
 import StatisticsView from '../view/statistics-view.js';
 import ProfileView from '../view/profile-view.js';
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 const mainElement = document.querySelector('.main');
 const headerElement = document.querySelector('.header');
 const footerStatisticElement = document.querySelector('.footer__statistics');
@@ -35,11 +40,11 @@ export default class PagePresenter {
   #profileComponent = null;
   #statisticComponent = null;
 
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
+
   #currentSortType = SortType.DEFAULT;
   currentFilmPopup = null;
-
   #filmListContainer;
-
   #filmListPresentersMap = [];
 
   #sorts = [
@@ -87,6 +92,8 @@ export default class PagePresenter {
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_FILMS:
         this.#filmsModel.updateFilm(updateType, update);
@@ -108,6 +115,8 @@ export default class PagePresenter {
         }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
