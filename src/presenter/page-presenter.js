@@ -43,7 +43,7 @@ export default class PagePresenter {
   #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   #currentSortType = SortType.DEFAULT;
-  currentFilmPopup = null;
+  #currentFilmPopup = null;
   #filmListContainer;
   #filmListPresentersMap = [];
 
@@ -170,7 +170,7 @@ export default class PagePresenter {
   };
 
   #updatePopup = (film, restoreComment) => {
-    if (this.currentFilmPopup?.id === film.id) {
+    if (this.#currentFilmPopup?.id === film.id) {
       this.#popupPresenter.init(film, restoreComment);
     }
   };

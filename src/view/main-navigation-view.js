@@ -40,8 +40,10 @@ export default class MainNavigationView extends AbstractView {
   };
 
   #filterTypeChangeHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.filterChange(evt.target.dataset.filterType);
+    if (evt.target.closest('.main-navigation')) {
+      evt.preventDefault();
+      this._callback.filterChange(evt.target.closest('.main-navigation__item').dataset.filterType);
+    }
   };
 
 }
