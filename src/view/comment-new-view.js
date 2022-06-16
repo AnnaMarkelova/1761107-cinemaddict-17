@@ -75,7 +75,7 @@ export default class CommentNewView extends AbstractStatefulView {
 
   #setInnerHandlers = () => {
     this.element.querySelector('.film-details__emoji-list').addEventListener('change', this.#emojiListHandler);
-    this.element.querySelector('.film-details__comment-input').addEventListener('change', this.#commentInputHandler);
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
   };
 
   #setKeydownHandler = () => {

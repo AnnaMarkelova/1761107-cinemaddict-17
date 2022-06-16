@@ -22,38 +22,56 @@ export default class FilmsApiService extends ApiService {
 
   #adaptToServer = (film) => {
 
+    const {
+      filmInfo,
+      userDetails,
+      ...filmProps } = film;
+
     const adaptedFilm = {
-      ...film,
-      'film_info': {
-        actors: film.filmInfo.actors,
-        'age_rating': film.filmInfo['ageRating'],
-        'alternative_title': film.filmInfo.alternativeTitle,
-        description: film.filmInfo['description'],
-        director: film.filmInfo['director'],
-        genre: film.filmInfo['genre'],
-        poster: film.filmInfo['poster'],
-        runtime: film.filmInfo['runtime'],
-        title: film.filmInfo['title'],
-        'total_rating': film.filmInfo.totalRating,
-        writers:  film.filmInfo.writers,
-        release: {
-          date: film.filmInfo.release['date'],
-          'release_country': film.filmInfo.release.releaseCountry,
-        },
-      },
-      'user_details': {
-        'already_watched': film.userDetails.alreadyWatched,
-        favorite: film.userDetails['favorite'],
-        'watching_date': film.userDetails.watchingDate,
-        watchlist: film.userDetails['watchlist'],
-      }
+      'film_info': this.#getFilmInfo(filmInfo),
+      'user_details': this.#getUserDetails(userDetails),
+      ...filmProps
     };
 
-    // Ненужные ключи мы удаляем
-    delete adaptedFilm.filmInfo;
-    delete adaptedFilm.userDetails;
-
     return adaptedFilm;
+  };
+
+  #getFilmInfo = (filmInfo) => {
+    const {
+      ageRating,
+      alternativeTitle,
+      totalRating,
+      release: {
+        releaseCountry,
+        ...restReleaseProps
+      },
+      ...restFilmInfoProp
+    } = filmInfo;
+
+    return {
+      'age_rating': ageRating,
+      'alternative_title': alternativeTitle,
+      'total_rating': totalRating,
+      release: {
+        'release_country': releaseCountry,
+        ...restReleaseProps
+      },
+      ...restFilmInfoProp,
+    };
+  };
+
+  #getUserDetails = (userDetails) => {
+    const {
+      alreadyWatched,
+      watchingDate,
+      ...restUserDetailProps
+    } = userDetails;
+
+    return {
+      'already_watched': alreadyWatched,
+      'watching_date': watchingDate,
+      ...restUserDetailProps
+    };
   };
 
 }

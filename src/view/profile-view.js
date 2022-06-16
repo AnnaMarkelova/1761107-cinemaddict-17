@@ -1,13 +1,13 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
 const getRang = (count) => {
-  if (count >= 1 && count < 11) {
-    return 'novice';
+  if (count > 20) {
+    return 'movie buff';
   }
-  if (count >= 11 && count < 21) {
+  if (count > 10) {
     return 'fan';
   }
-  return 'movie buff';
+  return 'novice';
 };
 
 const createProfileTemplate = (countFilms) => {

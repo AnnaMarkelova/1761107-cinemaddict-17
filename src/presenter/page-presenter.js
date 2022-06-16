@@ -124,10 +124,6 @@ export default class PagePresenter {
             this.#filmsModel.deleteComment(data.film, data.comment.id);
             restoreComment = true;
           }
-          else {
-            //добавляет комментарий в фильме
-            this.#filmsModel.addComment(data.film);
-          }
           //обновляет карточку фильма
           this.#filmListPresentersMap.forEach((presenter) => {
             const filmPresenter = presenter.getFilmPresenterMap().get(data.film.id);
@@ -165,10 +161,8 @@ export default class PagePresenter {
   };
 
   #updatePopup = (film, restoreComment) => {
-    if (this.currentFilmPopup !== null) {
-      if (this.currentFilmPopup.id === film.id) {
-        this.#popupPresenter.init(film, restoreComment);
-      }
+    if (this.currentFilmPopup?.id === film.id) {
+      this.#popupPresenter.init(film, restoreComment);
     }
   };
 
@@ -185,7 +179,6 @@ export default class PagePresenter {
 
       this.#filmListPresenter = this.#renderFilmsListPresenter(this.films, 'AllMovie', true, false, this.#filterModel.filter);
     }
-
   };
 
   #updateMainFilmsList = () => {
@@ -244,10 +237,8 @@ export default class PagePresenter {
 
     if (headerElement.contains(prevProfileComponent.element)) {
       replace(this.#profileComponent, prevProfileComponent);
-
     }
     remove(prevProfileComponent);
-
   };
 
   #renderStatistic = () => {
@@ -262,7 +253,6 @@ export default class PagePresenter {
 
     if (footerStatisticElement.contains(prevStatisticComponent.element)) {
       replace(this.#statisticComponent, prevStatisticComponent);
-
     }
     remove(prevStatisticComponent);
 

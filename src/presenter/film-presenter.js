@@ -37,12 +37,10 @@ export default class FilmPresenter {
       replace(this.#filmCardComponent, prevFilmCardComponent);
       this.#filmCardComponent.setClickHandler(this.#onFilmCardClick);
       this.#setupUserDetailHandlers();
-      if (this.#prevFilm !== null) {
-        if (this.#prevFilm.id === this.#film.id) {
-          this.#prevFilm = film;
-          this.#setCurrentFilmPopup(film);
-          this.#showPopup(this.#film);
-        }
+      if (this.#prevFilm?.id === this.#film.id) {
+        this.#prevFilm = film;
+        this.#setCurrentFilmPopup(film);
+        this.#showPopup(this.#film);
       }
 
     }
