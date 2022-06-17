@@ -18,7 +18,7 @@ export default class CommentPresenter {
   }
 
   init = () => {
-    this.#commentComponent = new CommentView(this.#comment);
+    this.#commentComponent = new CommentView(this.#comment, this.#setupCommentHandlers);
     this.#renderComment();
     this.#setupCommentHandlers();
   };
@@ -38,8 +38,28 @@ export default class CommentPresenter {
       {
         film: this.#film,
         comment: this.#comment,
-        isDelete: true
+        isDelete: true,
+        setViewAction: this.#setDeleting,
+        setAborting: this.#setAborting,
       },
     );
+  };
+
+  #setDeleting = () => {
+    this.#commentComponent.updateElement({
+      isDisabled: true,
+      isDeleting: true,
+    });
+  };
+
+  #setAborting = () => {
+    const resetFormState = () => {
+      this.#commentComponent.updateElement({
+        isDisabled: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#commentComponent.shake(resetFormState);
   };
 }

@@ -1,33 +1,52 @@
 import Observable from '../framework/observable.js';
-import { getComments } from '../mock/comments';
+import { UpdateType } from '../const.js';
 
 export default class CommentsModel extends Observable {
 
-  #comments = getComments();
+  #commentsApiService = null;
+  #comments = [];
+
+  constructor(commentsApiService) {
+    super();
+    this.#commentsApiService = commentsApiService;
+
+  }
+
+  init = async (idFilm) => {
+    try {
+      this.#commentsApiService.init(idFilm);
+      this.#comments = await this.#commentsApiService.comments;
+    } catch (err) {
+      this.#comments = [];
+    }
+
+    this._notify(UpdateType.INIT_COMMENT);
+  };
 
   get comments() {
     return this.#comments;
   }
 
-  deleteComment = (updateType, update) => {
-    // const index = this.#comments.findIndex((comment) => comment.id === update.id);
+  deleteComment = async (updateType, update) => {
+    try {
+      await this.#commentsApiService.deleteComment(update.comment.id);
 
-    // if (index === -1) {
-    //   throw new Error('Can\'t delete unexisting comment');
-    // }
+      this.#comments = this.#comments.filter((item) => item.id !== update.comment.id);
 
-    this.#comments = this.#comments.filter((item) => item.id !== update.comment.id);
-
-    this._notify(updateType, update);
+      this._notify(updateType, update);
+    } catch (err) {
+      throw new Error('Can\'t delete comment');
+    }
   };
 
-  addComment = (updateType, update) => {
-    this.#comments.push(update.comment);
-
-    this._notify(updateType, update);
+  addComment = async (updateType, update) => {
+    try {
+      const response = await this.#commentsApiService.addComment(update.film.id, update.comment);
+      this.#comments = response.comments;
+      update.film.comments = response.movie.comments;
+      this._notify(updateType, update);
+    } catch (err) {
+      throw new Error('Can\'t add comment');
+    }
   };
-
-  getCommentsOfFilm = (commentsID) => this.#comments.filter((comment) => commentsID.includes(comment.id));
-
-  getCommentById = (id) => this.#comments.find((comment) => comment.id === id);
 }

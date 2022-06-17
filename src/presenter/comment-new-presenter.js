@@ -1,36 +1,37 @@
-import { render } from '../framework/render.js';
+import { render, remove } from '../framework/render.js';
 import { UserAction, UpdateType } from '../const.js';
 import CommentNewView from '../view/comment-new-view.js';
 
 export default class CommentNewPresenter {
 
   #container;
-  #commentNewComponent;
+  #commentNewComponent = null;
   #film;
   #updateComments;
 
-  constructor(container, film, updateComments) {
-    this.#container = container;
+  constructor(updateComments) {
     this.#updateComments = updateComments;
-    this.#film = film;
   }
 
-  init = () => {
+  init = (container, film, restoreComment) => {
 
-    this.#commentNewComponent = new CommentNewView(this.#handlerKeydown);
+    this.#container = container;
+    this.#film = film;
+
+    const prevCommentNewComponent = this.#commentNewComponent;
+    if (restoreComment && prevCommentNewComponent !== null) {
+      this.#commentNewComponent = new CommentNewView(this.#handlerKeydown, prevCommentNewComponent.state);
+    } else {
+      this.#commentNewComponent = new CommentNewView(this.#handlerKeydown);
+    }
     this.#renderCommentNew();
-    //this.#setupCommentHandlers();
+    remove(prevCommentNewComponent);
+
   };
 
   #renderCommentNew = () => {
     render(this.#commentNewComponent, this.#container.element);
   };
-
-  getFilmDetailComponent = () => this.#commentNewComponent;
-
-  // #setupCommentHandlers = () => {
-  //   this.#commentNewComponent.setClickHandler(this.#handlerClick);
-  // };
 
   #handlerKeydown = (newComment) => {
     this.#updateComments(
@@ -39,9 +40,27 @@ export default class CommentNewPresenter {
       {
         film: this.#film,
         comment: newComment,
-        isDelete: false
+        isDelete: false,
+        setViewAction: this.#setSaving,
+        setAborting: this.#setAborting,
       },
     );
+  };
+
+  #setSaving = () => {
+    this.#commentNewComponent.updateElement({
+      isDisabled: true,
+    });
+  };
+
+  #setAborting = () => {
+    const resetFormState = () => {
+      this.#commentNewComponent.updateElement({
+        isDisabled: false,
+      });
+    };
+
+    this.#commentNewComponent.shake(resetFormState);
   };
 }
 
