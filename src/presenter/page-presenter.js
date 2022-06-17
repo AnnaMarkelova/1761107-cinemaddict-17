@@ -286,8 +286,8 @@ export default class PagePresenter {
     this.#updateMainFilmsList();
   };
 
-  #setCurrentFilmPopup(film) {
-    this.currentFilmPopup = film;
-  }
+  #setCurrentFilmPopup = (film) => {
+    this.#currentFilmPopup = film;
+  };
 
 }
