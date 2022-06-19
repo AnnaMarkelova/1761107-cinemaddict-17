@@ -1,6 +1,8 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { getYearFromDate, transformIntToHour } from '../util/util.js';
 
+const LENGTH_DESCRIPTION = 140;
+
 const createFilmCardTemplate = (film) => {
   const {
     comments,
@@ -23,11 +25,7 @@ const createFilmCardTemplate = (film) => {
   const watchlistActive = watchlist ? 'film-card__controls-item--active' : '';
   const alreadyWatchedActive = alreadyWatched ? 'film-card__controls-item--active' : '';
   const favoriteActive = favorite ? 'film-card__controls-item--active' : '';
-
-  let newdescription  = description;
-  if (description.length >= 140) {
-    newdescription = `${description.slice(1, 140)}...`;
-  }
+  const newdescription = (description.length >= LENGTH_DESCRIPTION) ? `${description.slice(0, LENGTH_DESCRIPTION)}...` : description;
 
   return `<article class="film-card">
   <a class="film-card__link">

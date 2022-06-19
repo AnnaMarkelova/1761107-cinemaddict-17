@@ -1,10 +1,13 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
+const RANG_MOVIE_BUFF = 20;
+const RANG_FAN = 10;
+
 const getRang = (count) => {
-  if (count > 20) {
+  if (count > RANG_MOVIE_BUFF) {
     return 'movie buff';
   }
-  if (count > 10) {
+  if (count > RANG_FAN) {
     return 'fan';
   }
   return 'novice';

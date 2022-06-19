@@ -1,8 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
-dayjs.extend(duration);
-import { humanizeDateRelease } from '../util/util.js';
+import { humanizeDateRelease, transformIntToHour } from '../util/util.js';
 
 const createGenresTemplate = (genres) => genres.map((item) => `<span class="film-details__genre">${item}</span>`).join('');
 
@@ -90,7 +87,7 @@ const createFilmDetailsTemplate = (film) => {
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Runtime</td>
-            <td class="film-details__cell">${dayjs.duration(runtime, 'minutes').format('H[h] mm[min]')}</td>
+            <td class="film-details__cell">${transformIntToHour(runtime)}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Country</td>
