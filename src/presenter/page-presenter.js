@@ -78,9 +78,9 @@ export default class PagePresenter {
   }
 
   get films() {
-    const sortObject = this.#sorts.find((item) => item.sortType === this.#currentSortType);
+    const sortItem = this.#sorts.find((item) => item.sortType === this.#currentSortType);
     const filteredFilms = getFilters().get(this.#filterModel.filter)(this.#filmsModel);
-    const films = sortObject ? sortObject.sortFilms(filteredFilms) : filteredFilms;
+    const films = sortItem ? sortItem.sortFilms(filteredFilms) : filteredFilms;
     return films;
   }
 

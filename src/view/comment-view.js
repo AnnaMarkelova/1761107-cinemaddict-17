@@ -11,7 +11,7 @@ const createCommentTemplate = (commentItem, state) => {
     emotion,
   } = commentItem;
   const isDisabled = state.isDisabled ? 'disabled' : '';
-  const isDeleting = state.isDeleting ? 'deleting...' : 'Delete';
+  const isDeleting = state.isDeleting ? 'Deleting...' : 'Delete';
 
   return `<li class="film-details__comment">
   <span class="film-details__comment-emoji">

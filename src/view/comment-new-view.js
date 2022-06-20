@@ -55,26 +55,13 @@ export default class CommentNewView extends AbstractStatefulView {
     return this._state;
   }
 
-  static parseCommentToState = (comment) => (
-    {
-      ...comment,
-      isDisabled: false,
-    }
-  );
-
-  static parseStateToComment = (state) => {
-    const comment = { ...state };
-    delete comment.isDisabled;
-    return comment;
-  };
-
   _restoreHandlers = () => {
     this.#setInnerHandlers();
     this.#setKeydownHandler();
   };
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.film-details__emoji-list').addEventListener('change', this.#emojiListHandler);
+    this.element.querySelector('.film-details__emoji-list').addEventListener('change', this.#emojiListChangeHandler);
     this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
   };
 
@@ -83,7 +70,7 @@ export default class CommentNewView extends AbstractStatefulView {
     this.element.querySelector('.film-details__comment-input').addEventListener('keydown', this.#ctrlEnterKeyDownHandler);
   };
 
-  #emojiListHandler = (evt) => {
+  #emojiListChangeHandler = (evt) => {
     const emojiItemInput = evt.target.closest('.film-details__emoji-item');
     if (emojiItemInput) {
       evt.preventDefault();
@@ -106,6 +93,19 @@ export default class CommentNewView extends AbstractStatefulView {
       evt.preventDefault();
       this._callback.click(CommentNewView.parseStateToComment(this._state));
     }
+  };
+
+  static parseCommentToState = (comment) => (
+    {
+      ...comment,
+      isDisabled: false,
+    }
+  );
+
+  static parseStateToComment = (state) => {
+    const comment = { ...state };
+    delete comment.isDisabled;
+    return comment;
   };
 
 }

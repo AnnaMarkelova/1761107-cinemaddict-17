@@ -94,8 +94,6 @@ export default class FilmsModel extends Observable {
     }
   };
 
-  getFilmById = (filmId) => this.#films.find((item) => item.id === filmId);
-
   deleteComment = (film, idComment) => {
     film.comments = film.comments.filter((item) => item !== idComment);
   };

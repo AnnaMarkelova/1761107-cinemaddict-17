@@ -5,12 +5,12 @@ const RANG_FAN = 10;
 
 const getRang = (count) => {
   if (count > RANG_MOVIE_BUFF) {
-    return 'movie buff';
+    return 'Movie buff';
   }
   if (count > RANG_FAN) {
-    return 'fan';
+    return 'Fan';
   }
-  return 'novice';
+  return 'Novice';
 };
 
 const createProfileTemplate = (countFilms) => {
