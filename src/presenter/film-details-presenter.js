@@ -1,4 +1,3 @@
-import { isEscapeEvent } from '../util/util.js';
 import { render } from '../framework/render.js';
 import {UserAction, UpdateType} from '../const.js';
 import FilmDetailsView from '../view/film-details-view.js';
@@ -10,12 +9,14 @@ export default class FilmDetailPresenter {
   #film;
   #filmDetailComponent;
   #updateData;
+  #onEscKeyDown;
 
-  constructor(film, container, updateData, closePopup) {
+  constructor(film, container, updateData, closePopup, onEscKeyDown) {
     this.#container = container;
     this.#film = film;
     this.#updateData = updateData;
     this.#closePopup = closePopup;
+    this.#onEscKeyDown = onEscKeyDown;
   }
 
   init = () => {
@@ -30,8 +31,6 @@ export default class FilmDetailPresenter {
   };
 
   #setupCloseHandlers = () => {
-    document.body.classList.add('hide-overflow');
-    document.addEventListener('keydown', this.#onEscKeyDown);
     this.#filmDetailComponent.setClickHandler(this.#onFilmDetailsCloseBtnClick);
   };
 
@@ -66,15 +65,6 @@ export default class FilmDetailPresenter {
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#onEscKeyDown);
     this.#closePopup();
-  };
-
-  #onEscKeyDown = (evt) => {
-    if (isEscapeEvent(evt)) {
-      evt.preventDefault();
-      document.body.classList.remove('hide-overflow');
-      document.removeEventListener('keydown', this.#onEscKeyDown);
-      this.#closePopup();
-    }
   };
 
 }

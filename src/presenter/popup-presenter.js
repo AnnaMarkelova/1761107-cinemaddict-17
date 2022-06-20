@@ -1,4 +1,5 @@
 import { render, remove, replace } from '../framework/render.js';
+import { isEscapeEvent } from '../util/util.js';
 import { UpdateType } from '../const.js';
 
 import CommentsContainerView from '../view/comments-container-view.js';
@@ -58,6 +59,7 @@ export default class PopupPresenter {
     this.#popupComponent = new PopupView();
 
     if (prevPopupComponent === null) {
+      this.#setupKeyDownHandlers();
       this.#renderPopup();
       this.#renderFilmDetails();
       this.#renderComments();
@@ -73,12 +75,17 @@ export default class PopupPresenter {
     remove(prevPopupComponent);
   };
 
+  #setupKeyDownHandlers = () => {
+    document.body.classList.add('hide-overflow');
+    document.addEventListener('keydown', this.#onEscKeyDown);
+  };
+
   #renderPopup = () => {
     render(this.#popupComponent, this.#container, 'afterend');
   };
 
   #renderFilmDetails = () => {
-    this.#filmDetailPresenter = new FilmDetailPresenter(this.#film, this.#popupComponent, this.#updateData, this.#closePopup);
+    this.#filmDetailPresenter = new FilmDetailPresenter(this.#film, this.#popupComponent, this.#updateData, this.#closePopup, this.#onEscKeyDown);
     this.#filmDetailPresenter.init();
   };
 
@@ -95,13 +102,22 @@ export default class PopupPresenter {
     if (this.#CommentNewPresenter === null) {
       this.#CommentNewPresenter = new CommentNewPresenter(this.#updateData);
     }
-    this.#CommentNewPresenter.init(this.commentsSectionComponent, this.#film, this.#restoreComment );
+    this.#CommentNewPresenter.init(this.commentsSectionComponent, this.#film, this.#restoreComment);
   };
 
   #closePopup = () => {
     remove(this.#popupComponent);
     this.#popupComponent = null;
     this.#setCurrentFilmPopup(null);
+  };
+
+  #onEscKeyDown = (evt) => {
+    if (isEscapeEvent(evt)) {
+      evt.preventDefault();
+      document.body.classList.remove('hide-overflow');
+      document.removeEventListener('keydown', this.#onEscKeyDown);
+      this.#closePopup();
+    }
   };
 
 }
